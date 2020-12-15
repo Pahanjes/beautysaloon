@@ -1,4 +1,4 @@
-package ru.pahanjes.beautysaloon.crm;
+package ru.pahanjes.beautysaloon.crm.UI;
 
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;

@@ -1,0 +1,52 @@
+package ru.pahanjes.beautysaloon.crm.backend.service;
+
+import org.springframework.stereotype.Service;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
+import ru.pahanjes.beautysaloon.crm.backend.repository.CustomerRepository;
+import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
+
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@Service
+public class CustomerService {
+    private static final Logger LOGGER = Logger.getLogger(CustomerService.class.getName());
+    private CustomerRepository customerRepository;
+    private EmployeeRepository employeeRepository;
+
+    public CustomerService(CustomerRepository customerRepository,
+                           EmployeeRepository employeeRepository) {
+        this.customerRepository = customerRepository;
+        this.employeeRepository = employeeRepository;
+    }
+
+    public List<Customer> findAll() {
+        return customerRepository.findAll();
+    }
+
+    public List<Customer> findAll(String filter) {
+        if(filter == null || filter.isEmpty()){
+            return customerRepository.findAll();
+        } else {
+            return customerRepository.search(filter);
+        }
+    }
+
+    public Long count() {
+        return customerRepository.count();
+    }
+
+    public void delete(Customer customer) {
+        customerRepository.delete(customer);
+    }
+
+    public void save(Customer customer) {
+        if(customer == null) {
+            LOGGER.log(Level.SEVERE,
+                    "Клиент пуст. Вы уверены, что хотите подключить форму к приложению?");
+            return;
+        }
+        customerRepository.save(customer);
+    }
+}
