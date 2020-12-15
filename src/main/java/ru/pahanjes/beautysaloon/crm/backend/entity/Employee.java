@@ -43,6 +43,10 @@ public class Employee extends AbstractEntity{
 
     @NotNull
     @NotEmpty
+    private String position = "";
+
+    @NotNull
+    @NotEmpty
     private float salary = 0.0F;
 
     public List<Customer> getClients() {
@@ -95,6 +99,14 @@ public class Employee extends AbstractEntity{
 
     public void setSalary(float salary) {
         this.salary = salary;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
 }
