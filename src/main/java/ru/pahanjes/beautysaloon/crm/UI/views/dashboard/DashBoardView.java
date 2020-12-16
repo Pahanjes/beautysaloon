@@ -8,8 +8,8 @@ import ru.pahanjes.beautysaloon.crm.UI.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
-@PageTitle("Dashboard | Vaadin CRM")
-@Route(value = "dashboard", layout = CabinetLayout.class)
+@PageTitle("Расписание | BS")
+@Route(value = "lk/dashboard", layout = CabinetLayout.class)
 public class DashBoardView extends VerticalLayout {
 
     private final CustomerService customerService;

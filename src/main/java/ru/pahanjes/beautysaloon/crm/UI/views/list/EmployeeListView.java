@@ -16,7 +16,7 @@ import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
 import java.math.BigDecimal;
 
-@Route(value = "employee", layout = CabinetLayout.class)
+@Route(value = "lk/employee", layout = CabinetLayout.class)
 @PageTitle("Сотрудники | BS CRM")
 public class EmployeeListView  extends VerticalLayout {
 
