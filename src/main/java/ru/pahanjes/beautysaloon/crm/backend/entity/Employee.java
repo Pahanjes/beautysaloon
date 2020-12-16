@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +12,25 @@ import java.util.List;
 public class Employee extends AbstractEntity{
 
     public enum Status {
-        CurrentlyWorking, LunchBreak, WaitingForTheCustomer, OnVacation, fired
+        CurrentlyWorking ("На смене"),
+        LunchBreak ("На обеде"),
+        WaitingForTheCustomer ("Ожидает клиента"),
+        OnVacation ("В отпуске"),
+        fired ("Уволен");
+
+        private final String value;
+
+        static public int count() {
+            return 5;
+        }
+
+        Status(String value){
+            this.value = value;
+        }
+
+        public String getValue(){
+            return value;
+        }
     }
 
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
@@ -44,11 +63,21 @@ public class Employee extends AbstractEntity{
     @NotNull
     @NotEmpty
     private String position = "";
+//
+    /*@NotNull
+    private double salary = 0.0;*/
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal sal) {
+        this.salary = sal;
+    }
 
     @NotNull
-    @NotEmpty
-    private float salary = 0.0F;
-
+    private BigDecimal salary = new BigDecimal("0.0");
+    //
     public List<Customer> getClients() {
         return clients;
     }
@@ -93,13 +122,13 @@ public class Employee extends AbstractEntity{
         this.phoneNumber = phoneNumber;
     }
 
-    public float getSalary() {
+   /* public double getSalary() {
         return salary;
     }
 
-    public void setSalary(float salary) {
+    public void setSalary(double salary) {
         this.salary = salary;
-    }
+    }*/
 
     public String getPosition() {
         return position;
@@ -107,6 +136,10 @@ public class Employee extends AbstractEntity{
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getFullNameWithPosition() {
+        return firstName + ' ' + lastName + ": " + position;
     }
 
 }

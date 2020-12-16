@@ -1,0 +1,61 @@
+/* Main layout */
+
+a[highlight] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.header {
+    padding: 0 var(--lumo-space-m);
+}
+
+.header h1.logo {
+    font-size: 1em;
+    margin: var(--lumo-space-m);
+}
+
+/* Customer list view*/
+.customer-list-view .customer-content {
+    display: flex;
+}
+
+.customer-list-view .customer-grid {
+    flex: 2;
+}
+
+.customer-list-view .customer-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
+
+/* Employee list view*/
+.employee-list-view .employee-content {
+    display: flex;
+}
+
+.employee-list-view .employee-grid {
+    flex: 2;
+}
+
+.employee-list-view .employee-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
+
+@media all and (max-width: 1100px) {
+    .customer-list-view.editing .toolbar,
+    .customer-list-vew.editing .customer.grid {
+        display: none;
+    }
+
+    .employee-list-view.editing .toolbar,
+    .employee-list-view.editing .employee.grid {
+        display: none;
+    }
+}
+
+/*
+.dashboard-view .contact-stats {
+    font-size: 4em;
+    margin: 1em 0;
+}*/

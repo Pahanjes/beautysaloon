@@ -9,7 +9,20 @@ import javax.validation.constraints.NotNull;
 public class Customer extends AbstractEntity implements Cloneable {
 
     public enum Status {
-        SignedUp, Served, HasBeenServed
+        SignedUp ("Записан"),
+        CanseldTheEntry ("Запись была отменена"),
+        Served ("Обслуживается"),
+        HasBeenServed ("Обслуживание завершено");
+
+        private final String value;
+
+        Status(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
     @NotNull
