@@ -1,0 +1,13 @@
+/* Employee list view*/
+.employee-list-view .employee-content {
+    display: flex;
+}
+
+.employee-list-view .employee-grid {
+    flex: 2;
+}
+
+.employee-list-view .employee-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}

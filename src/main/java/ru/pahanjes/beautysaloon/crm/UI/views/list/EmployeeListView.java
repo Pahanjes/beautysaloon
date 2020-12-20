@@ -1,6 +1,7 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.list;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 
 @Route(value = "lk/employee", layout = CabinetLayout.class)
 @PageTitle("Сотрудники | BS CRM")
+@CssImport("./styles/views/employee-view.css")
 public class EmployeeListView  extends VerticalLayout {
 
     private Grid<Employee> employeeGrid = new Grid<>(Employee.class);

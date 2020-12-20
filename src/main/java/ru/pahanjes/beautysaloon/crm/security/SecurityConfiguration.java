@@ -1,15 +1,13 @@
 package ru.pahanjes.beautysaloon.crm.security;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import ru.pahanjes.beautysaloon.crm.backend.service.UserService;
 
 @EnableWebSecurity
 @Configuration
@@ -32,36 +30,63 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
+    // Блокировка неаутентифицированных запросов ко всем страницам, кроме страницы входа.
+
+    private final UserService userService;
+
+    public SecurityConfiguration(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // Отключает защиту от подделки межсайтовых запросов (CSRF), так как Vaadin уже имеет защиту CSRF.
         http.csrf().disable()
+                // Использует CustomRequestCache для отслеживания неавторизованных запросов,
+                // Чтобы пользователи перенаправлялись соответствующим образом после входа в систему.
                 .requestCache().requestCache(new CustomRequestCache())
-                .and().authorizeRequests()
-                .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-
-                .anyRequest().authenticated()
-
+                // Включает авторизацию.
+                .and().
+                    authorizeRequests()
+                    // Разрешает весь внутренний трафик из фреймворка Vaadin.
+                    .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+                    // Разрешает весь аутентифицированный трафик.
+                    .anyRequest().authenticated()
+                // Включает вход на основе формы и разрешает неаутентифицированный доступ к нему.
                 .and().formLogin()
                     .loginPage(LOGIN_URL).permitAll()
+                    // Настраивает URL-адреса страницы входа.
                     .loginProcessingUrl(LOGIN_PROCESSING_URL)
                     .failureUrl(LOGIN_FAILURE_URL)
-                .and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL)
+                // Настраивает URL-адрес выхода.
+                .and()
+                    .logout().
+                    logoutSuccessUrl(LOGOUT_SUCCESS_URL)
         ;
     }
 
-    @Bean
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance())
+        ;
+    }
+
+    // Настраивает тестовых пользователей
+   /* @Bean
     @Override
     public UserDetailsService userDetailsService() {
         UserDetails user =
-                User.withUsername("user")
-                        .password("{noop}password")
+                User.withUsername("u")
+                        .password("{noop}p")
                         .roles("USER")
                         .build()
                 ;
 
         return new InMemoryUserDetailsManager(user);
-    }
+    }*/
 
+    // Исключение связь Vaadin-framework и статических активов из Spring Security.
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(

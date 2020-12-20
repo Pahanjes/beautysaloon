@@ -33,7 +33,7 @@ public class Customer extends AbstractEntity implements Cloneable {
     @NotEmpty
     private String lastName = "";
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 

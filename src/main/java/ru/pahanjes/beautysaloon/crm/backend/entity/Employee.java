@@ -5,7 +5,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -33,11 +32,15 @@ public class Employee extends AbstractEntity{
         }
     }
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)
-    private List<Customer> clients = new LinkedList<>();
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    private List<Customer> clients;
 
-    public Employee() {
-    }
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    /*public Employee() {
+    }*/
 
     @NotNull
     @NotEmpty
@@ -63,23 +66,16 @@ public class Employee extends AbstractEntity{
     @NotNull
     @NotEmpty
     private String position = "";
-//
-    /*@NotNull
-    private double salary = 0.0;*/
-
-    public BigDecimal getSalary() {
-        return salary;
-    }
-
-    public void setSalary(BigDecimal sal) {
-        this.salary = sal;
-    }
 
     @NotNull
     private BigDecimal salary = new BigDecimal("0.0");
-    //
+
     public List<Customer> getClients() {
         return clients;
+    }
+
+    public void setClients(List<Customer> clients) {
+        this.clients = clients;
     }
 
     public String getFirstName() {
@@ -122,14 +118,6 @@ public class Employee extends AbstractEntity{
         this.phoneNumber = phoneNumber;
     }
 
-   /* public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }*/
-
     public String getPosition() {
         return position;
     }
@@ -140,6 +128,22 @@ public class Employee extends AbstractEntity{
 
     public String getFullNameWithPosition() {
         return firstName + ' ' + lastName + ": " + position;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public void setSalary(BigDecimal sal) {
+        this.salary = sal;
     }
 
 }

@@ -15,6 +15,7 @@ public final class SecurityUtils {
         // Util methods only
     }
 
+    //  Определяет является ли запрос внутрненним
     static boolean isFrameworkInternalRequest(HttpServletRequest request) {
         final String parameterValue = request.getParameter(ApplicationConstants.REQUEST_TYPE_PARAMETER);
         return parameterValue != null
@@ -22,6 +23,7 @@ public final class SecurityUtils {
                 .anyMatch(r -> r.getIdentifier().equals(parameterValue));
     }
 
+    // Проверяет вошел ли текущий пользователь в систему
     static boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null

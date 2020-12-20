@@ -3,10 +3,8 @@ package ru.pahanjes.beautysaloon.crm.UI.views.login;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
+import ru.pahanjes.beautysaloon.crm.UI.views.register.RegisterView;
 
 import java.util.Collections;
 
@@ -26,10 +24,14 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         loginForm.setAction("login");
 
+
         add(
-                new H1("BS CRM"),
-                loginForm
+                new H1("Beauty Saloon CRM"),
+                loginForm,
+                new RouterLink("Register", RegisterView.class)
         );
+
+        /*new RouterLink("Register", RegisterView.class);*/
     }
 
     @Override
@@ -40,8 +42,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         .getOrDefault("error", Collections.emptyList())
         .isEmpty()) {
             loginForm.setError(true);
-        } else {
-
         }
     }
+
 }

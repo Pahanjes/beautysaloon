@@ -10,6 +10,8 @@ import ru.pahanjes.beautysaloon.crm.UI.views.login.LoginView;
 @Component
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {
 
+    // Прослушивание инициализации пользовательского интерфейса (внутренний корневой компонент в Vaadin),
+    // А затем добавление прослушивателя (Listener) перед каждым переходом View.
     @Override
     public void serviceInit(ServiceInitEvent event) {
         event.getSource().addUIInitListener(uiEvent -> {
@@ -18,6 +20,7 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
         });
     }
 
+    // Перенаправление всех запросов на логин, если пользователь не авторизован.
     private void authenticateNavigation(BeforeEnterEvent event) {
         if (!LoginView.class.equals(event.getNavigationTarget())
                 && !SecurityUtils.isUserLoggedIn()) {

@@ -1,0 +1,13 @@
+/* Customer list view*/
+.customer-list-view .customer-content {
+    display: flex;
+}
+
+.customer-list-view .customer-grid {
+    flex: 2;
+}
+
+.customer-list-view .customer-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}

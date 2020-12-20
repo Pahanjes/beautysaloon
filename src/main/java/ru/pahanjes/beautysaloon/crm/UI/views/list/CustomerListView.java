@@ -1,6 +1,7 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.list;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,7 +17,8 @@ import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
 @Route(value = "lk/customer", layout = CabinetLayout.class)
-@PageTitle("Customers | BS CRM")
+@PageTitle("Клиенты | BS CRM")
+@CssImport("./styles/views/customer-view.css")
 public class CustomerListView extends VerticalLayout {
 
     private Grid<Customer> customerGrid = new Grid<>(Customer.class);
