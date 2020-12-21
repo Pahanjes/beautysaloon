@@ -10,13 +10,13 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import ru.pahanjes.beautysaloon.crm.UI.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
-@Route(value = "lk/customer", layout = CabinetLayout.class)
+/*@Route(value = "lk/customer", layout = CabinetLayout.class)*/
+@Route(value = "lk/customer")
 @PageTitle("Клиенты | BS CRM")
 @CssImport("./styles/views/customer-view.css")
 public class CustomerListView extends VerticalLayout {

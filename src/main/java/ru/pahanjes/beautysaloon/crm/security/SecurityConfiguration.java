@@ -18,19 +18,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     private static final String LOGIN_PROCESSING_URL = "/login";
     /*
-     * URL to enter the account if an error was catched
-     */
-    private static final String LOGIN_FAILURE_URL = "/login?error";
-    /*
      * URL to enter the account
      */
-    private static final String LOGIN_URL = "/login";
+    private static final String LOGIN_URL = "/logout";
     /*
      * URL to first page after logout
      */
     private static final String LOGOUT_SUCCESS_URL = "/login";
-
-    // Блокировка неаутентифицированных запросов ко всем страницам, кроме страницы входа.
 
     private final UserService userService;
 
@@ -57,8 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .loginPage(LOGIN_URL).permitAll()
                     // Настраивает URL-адреса страницы входа.
                     .loginProcessingUrl(LOGIN_PROCESSING_URL)
-                    .failureUrl(LOGIN_FAILURE_URL)
-                    .defaultSuccessUrl("/lk/customer")
+                    .defaultSuccessUrl("/lk")
                 // Настраивает URL-адрес выхода.
                 .and()
                     .logout().

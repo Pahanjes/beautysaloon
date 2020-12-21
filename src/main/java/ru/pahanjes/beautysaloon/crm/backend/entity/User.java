@@ -1,5 +1,7 @@
 package ru.pahanjes.beautysaloon.crm.backend.entity;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 public class User extends AbstractEntity implements UserDetails {
 
     private String username;
+    private final String passwordSalt = RandomStringUtils.random(32);
     private String password;
 
     private boolean isActive;
@@ -64,8 +67,12 @@ public class User extends AbstractEntity implements UserDetails {
         this.username = username;
     }
 
+    public String getPasswordSalt() {
+        return passwordSalt;
+    }
+
     public void setPassword(String password) {
-        this.password = password;
+        this.password = DigestUtils.sha1Hex(password + passwordSalt);
     }
 
     public boolean isActive() {
@@ -90,6 +97,10 @@ public class User extends AbstractEntity implements UserDetails {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public boolean checkPassword(String password) {
+        return DigestUtils.sha1Hex(password + passwordSalt).equals(getPassword());
     }
 
 }

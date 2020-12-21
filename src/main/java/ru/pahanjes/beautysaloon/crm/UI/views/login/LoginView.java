@@ -1,54 +1,67 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.login;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.*;
-import ru.pahanjes.beautysaloon.crm.UI.views.register.RegisterView;
+import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import ru.pahanjes.beautysaloon.crm.security.AuthService;
 
-import java.util.Collections;
 
-
-@Route("login")
+@Route(value = "login")
 @PageTitle("Login | BS CRM")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+@CssImport("./styles/views/login-view.css")
+public class LoginView extends VerticalLayout {
 
-    LoginForm loginForm = new LoginForm();
-
-    public LoginView(){
-        addClassName("login-view");
+    public LoginView(AuthService authService){
+        setId("login-view");
         setSizeFull();
 
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
-        LoginI18n loginI18n = LoginI18n.createDefault();
-        loginI18n.getForm().setForgotPassword("Зарегистрироваться");
-        loginForm.setAction("login");
-        loginForm.setI18n(loginI18n);
-        loginForm.setForgotPasswordButtonVisible(true);
-        loginForm.addForgotPasswordListener(click -> {
-            UI.getCurrent().navigate("register");
+        H1 headerWelcome = new H1("Beauty Saloon CRM");
+        headerWelcome.setId("welcome-header");
+        H2 headerLogIn = new H2("Вход");
+        headerLogIn.setId("login-header");
+
+        TextField username = new TextField("Имя пользователя");
+        username.setRequiredIndicatorVisible(true);
+        username.setRequired(true);
+        username.setErrorMessage("Поле не может быть пустым!");
+        username.setId("textfield-username");
+        PasswordField password = new PasswordField("Пароль");
+        password.setRequiredIndicatorVisible(true);
+        password.setRequired(true);
+        password.setErrorMessage("Поле не может быть пустым!");
+        password.setId("passwordfield-password");
+
+        Button buttonLogIn = new Button("Войти", click -> {
+            try {
+                authService.authenticate(username.getValue(), password.getValue());
+                UI.getCurrent().navigate("lk");
+            } catch (AuthService.AuthException e) {
+                Notification.show("Неверный пароль!");
+            }
         });
 
         add(
-                new H1("Beauty Saloon CRM"),
-                loginForm,
-                new RouterLink("Register", RegisterView.class)
+                headerWelcome,
+                headerLogIn,
+                username,
+                password,
+                buttonLogIn
         );
     }
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        if(!beforeEnterEvent.getLocation()
-        .getQueryParameters()
-        .getParameters()
-        .getOrDefault("error", Collections.emptyList())
-        .isEmpty()) {
-            loginForm.setError(true);
-        }
+    private void register(String username, String password) {
+
     }
 
 }

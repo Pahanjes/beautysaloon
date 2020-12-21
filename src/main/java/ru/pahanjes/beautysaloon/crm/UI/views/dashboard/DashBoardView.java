@@ -4,12 +4,12 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import ru.pahanjes.beautysaloon.crm.UI.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
+@Route(value = "lk/dashboard")
 @PageTitle("Расписание | BS")
-@Route(value = "lk/dashboard", layout = CabinetLayout.class)
+/*@Route(value = "lk/dashboard", layout = CabinetLayout.class)*/
 public class DashBoardView extends VerticalLayout {
 
     private final CustomerService customerService;
