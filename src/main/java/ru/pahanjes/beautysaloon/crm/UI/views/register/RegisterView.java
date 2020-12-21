@@ -93,6 +93,8 @@ public class RegisterView extends VerticalLayout {
         } else {
             if(employees.getValue() == null) {
                 Notification.show("Выберите сотрудника");
+            } else if (role.getValue() == null){
+                Notification.show("Выберита права");
             } else {
                 int res = authService.register(username, password, employees.getValue(), role.getValue());
                 if(res == -1) {

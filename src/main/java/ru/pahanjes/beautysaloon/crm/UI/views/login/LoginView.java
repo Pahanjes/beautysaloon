@@ -47,7 +47,7 @@ public class LoginView extends VerticalLayout {
                 authService.authenticate(username.getValue(), password.getValue());
                 UI.getCurrent().navigate("lk");
             } catch (AuthService.AuthException e) {
-                Notification.show("Неверный пароль!");
+                Notification.show("Неверный логин или пароль!");
             }
         });
 
