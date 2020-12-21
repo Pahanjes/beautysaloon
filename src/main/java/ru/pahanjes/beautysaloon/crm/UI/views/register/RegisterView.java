@@ -84,8 +84,12 @@ public class RegisterView extends VerticalLayout {
         } else if (!password.equals(confirmPassword)) {
             Notification.show("Пароли не совпадают");
         } else {
-            authService.register(username, password);
-            Notification.show("Пользователь зарегистрирован");
+            int res = authService.register(username, password);
+            if(res == -1) {
+                Notification.show("Пользователь с таким именем уже существует");
+            } else if (res == 0) {
+                Notification.show("Пользователь зарегистрирован");
+            }
         }
     }
 

@@ -41,13 +41,17 @@ public class AuthService extends Exception {
         }
     }
 
-    public void register(String username, String password) {
+    public int register(String username, String password) {
+        if(userRepository.findByUsername(username) != null) {
+            return -1;
+        }
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setActive(true);
         user.setRole(Collections.singleton(Role.USER));
         userRepository.save(user);
+        return  0;
     }
 
     private void createRoutes(Set<Role> role) {
