@@ -1,5 +1,6 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.register;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 import ru.pahanjes.beautysaloon.crm.security.AuthService;
 
@@ -21,6 +23,7 @@ public class RegisterView extends VerticalLayout {
     PasswordField password = new PasswordField("Пароль");
     PasswordField confirmPassword = new PasswordField("Подтвердите пароль");
     ComboBox<Employee> employees = new ComboBox<>("Сотрудник");
+    ComboBox<Role> role = new ComboBox<>("Права");
     Button register = new Button("Зарегистрировать");
     HorizontalLayout firstLayout = new HorizontalLayout();
     HorizontalLayout secondLayout = new HorizontalLayout();
@@ -36,7 +39,7 @@ public class RegisterView extends VerticalLayout {
         //setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
-        employees.setItems(employeeService.finalAll());
+        employees.setItems(employeeService.findAllWithoutAccount());
         employees.setItemLabelGenerator(Employee::getFullNameWithPosition);
         employees.setRequired(true);
         employees.setRequiredIndicatorVisible(true);
@@ -59,16 +62,20 @@ public class RegisterView extends VerticalLayout {
         confirmPassword.setErrorMessage("Подтвердите пароль");
         confirmPassword.setPlaceholder("p@ssw0rd");
 
+        role.setItems(Role.values());
+
         firstLayout.add(employees, username);
         secondLayout.add(password, confirmPassword);
 
         register.addClickListener(click ->
                 register(username.getValue(), password.getValue(), confirmPassword.getValue())
         );
+        register.addClickShortcut(Key.ENTER);
 
         add(
                 firstLayout,
                 secondLayout,
+                role,
                 register
         );
     }
@@ -84,11 +91,15 @@ public class RegisterView extends VerticalLayout {
         } else if (!password.equals(confirmPassword)) {
             Notification.show("Пароли не совпадают");
         } else {
-            int res = authService.register(username, password);
-            if(res == -1) {
-                Notification.show("Пользователь с таким именем уже существует");
-            } else if (res == 0) {
-                Notification.show("Пользователь зарегистрирован");
+            if(employees.getValue() == null) {
+                Notification.show("Выберите сотрудника");
+            } else {
+                int res = authService.register(username, password, employees.getValue(), role.getValue());
+                if(res == -1) {
+                    Notification.show("Пользователь с таким именем уже существует");
+                } else if (res == 0) {
+                    Notification.show("Пользователь зарегистрирован");
+                }
             }
         }
     }

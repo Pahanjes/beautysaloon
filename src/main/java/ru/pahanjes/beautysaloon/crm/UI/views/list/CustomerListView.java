@@ -36,7 +36,7 @@ public class CustomerListView extends VerticalLayout {
         configureGrids();
         getToolBar();
 
-        customerForm = new CustomerForm(employeeService.finalAll());
+        customerForm = new CustomerForm(employeeService.findAll());
         customerForm.addListener(CustomerForm.SaveEvent.class, this::saveCustomer);
         customerForm.addListener(CustomerForm.DeleteEvent.class, this::deleteCustomer);
         customerForm.addListener(CustomerForm.CloseEvent.class, closeEvent -> closeCustomerEditor());

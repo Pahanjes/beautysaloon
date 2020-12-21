@@ -36,7 +36,7 @@ public class EmployeeListView  extends VerticalLayout {
         configureGrid();
         getToolBar();
 
-        employeeForm = new EmployeeForm(employeeService.finalAll());
+        employeeForm = new EmployeeForm(employeeService.findAll());
         employeeForm.addListener(EmployeeForm.SaveEvent.class, this::saveEmployee);
         employeeForm.addListener(EmployeeForm.DeleteEvent.class, this::deleteEmployee);
         employeeForm.addListener(EmployeeForm.CloseEvent.class, closeEvent -> closeEmployeeEditor());

@@ -87,7 +87,10 @@ public class CabinetLayout extends AppLayout {
         header.add(new DrawerToggle());
         Anchor logout = new Anchor("logout", "Выход");
         logout.setId("anchor");
-        header.add(logo, new H5("Имя Фамилия, должность"), logout);
+        header.add(
+                logo,
+                new H5(VaadinSession.getCurrent().getAttribute(User.class).getUsername()),
+                logout);
         header.expand(logo);
         addToNavbar(header);
     }

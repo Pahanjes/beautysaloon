@@ -8,8 +8,10 @@ import ru.pahanjes.beautysaloon.crm.UI.views.dashboard.DashBoardView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.CustomerListView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.EmployeeListView;
 import ru.pahanjes.beautysaloon.crm.UI.views.register.RegisterView;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
+import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
 import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ public class AuthService extends Exception {
 
     private AuthorizedRoute route;
     private final UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
-    public AuthService(UserRepository userRepository){
+    public AuthService(UserRepository userRepository, EmployeeRepository employeeRepository){
         this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public void authenticate(String username, String password) throws AuthException {
@@ -41,7 +45,7 @@ public class AuthService extends Exception {
         }
     }
 
-    public int register(String username, String password) {
+    public int register(String username, String password, Employee employee, Role role) {
         if(userRepository.findByUsername(username) != null) {
             return -1;
         }
@@ -49,8 +53,10 @@ public class AuthService extends Exception {
         user.setUsername(username);
         user.setPassword(password);
         user.setActive(true);
-        user.setRole(Collections.singleton(Role.USER));
+        user.setRole(Collections.singleton(role));
+        employee.setUser(user);
         userRepository.save(user);
+        employeeRepository.save(employee);
         return  0;
     }
 

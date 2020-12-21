@@ -18,8 +18,14 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<Employee> finalAll() {
+    public List<Employee> findAll() {
         return employeeRepository.findAll();
+    }
+
+    public List<Employee> findAllWithoutAccount() {
+        List<Employee> employeesWithoutAccount = employeeRepository.findAll();
+        employeesWithoutAccount.removeIf(employee -> employee.getUser() != null);
+        return employeesWithoutAccount;
     }
 
     public List<Employee> findAll(String filter) {
