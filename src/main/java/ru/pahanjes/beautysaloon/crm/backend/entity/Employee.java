@@ -39,9 +39,6 @@ public class Employee extends AbstractEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
-    /*public Employee() {
-    }*/
-
     @NotNull
     @NotEmpty
     private String firstName = "";

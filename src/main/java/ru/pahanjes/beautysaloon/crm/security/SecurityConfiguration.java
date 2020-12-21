@@ -46,8 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Чтобы пользователи перенаправлялись соответствующим образом после входа в систему.
                 .requestCache().requestCache(new CustomRequestCache())
                 // Включает авторизацию.
-                .and().
-                    authorizeRequests()
+                .and()
+                    .authorizeRequests()
                     // Разрешает весь внутренний трафик из фреймворка Vaadin.
                     .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
                     // Разрешает весь аутентифицированный трафик.
@@ -58,6 +58,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     // Настраивает URL-адреса страницы входа.
                     .loginProcessingUrl(LOGIN_PROCESSING_URL)
                     .failureUrl(LOGIN_FAILURE_URL)
+                    .defaultSuccessUrl("/lk/customer")
                 // Настраивает URL-адрес выхода.
                 .and()
                     .logout().
@@ -71,20 +72,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
         ;
     }
-
-    // Настраивает тестовых пользователей
-   /* @Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withUsername("u")
-                        .password("{noop}p")
-                        .roles("USER")
-                        .build()
-                ;
-
-        return new InMemoryUserDetailsManager(user);
-    }*/
 
     // Исключение связь Vaadin-framework и статических активов из Spring Security.
     @Override
