@@ -7,11 +7,13 @@ import ru.pahanjes.beautysaloon.crm.UI.views.cabinet.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.UI.views.dashboard.DashBoardView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.CustomerListView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.EmployeeListView;
+import ru.pahanjes.beautysaloon.crm.UI.views.register.RegisterView;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
 import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +41,15 @@ public class AuthService extends Exception {
         }
     }
 
+    public void register(String username, String password) {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setActive(true);
+        user.setRole(Collections.singleton(Role.USER));
+        userRepository.save(user);
+    }
+
     private void createRoutes(Set<Role> role) {
         getAuthorizedRoutes(role).stream()
         .forEach(route ->
@@ -56,6 +67,7 @@ public class AuthService extends Exception {
             routes.add(new AuthorizedRoute("lk/customer", "Клиенты", CustomerListView.class));
             routes.add(new AuthorizedRoute("lk/employee", "Сотрудники", EmployeeListView.class));
             routes.add(new AuthorizedRoute("lk/dashboard", "Расписание", DashBoardView.class));
+            routes.add(new AuthorizedRoute("lk/register", "Регистрация", RegisterView.class));
         }
         return routes;
     }

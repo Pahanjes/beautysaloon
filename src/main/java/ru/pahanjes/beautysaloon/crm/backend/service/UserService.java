@@ -10,11 +10,14 @@ import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private static final Logger LOGGER = Logger.getLogger(CustomerService.class.getName());
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -43,5 +46,18 @@ public class UserService implements UserDetailsService {
             userRepository.save(defaultUser);
             userRepository.save(defaultAdmin);
         }
+    }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
+
+    public void save(User user) {
+        if (user == null){
+            LOGGER.log(Level.SEVERE,
+                    "error");
+            return;
+        }
+        userRepository.save(user);
     }
 }
