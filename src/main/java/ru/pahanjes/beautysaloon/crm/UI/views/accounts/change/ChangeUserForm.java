@@ -80,11 +80,9 @@ public class ChangeUserForm extends VerticalLayout {
 
     private void configureRadioButton() {
         isActive.setItems("Активен", "Неактивен");
-        /*isActive.addValueChangeListener(change -> )*/
     }
 
     private Component createButtonsLayout() {
-        /*save.addClickListener(save -> fireEvent(new SaveUserEvent(this)));*/
         save.addClickListener(save -> {
             updateUser();
             fireEvent(new SaveUserEvent(this, user));

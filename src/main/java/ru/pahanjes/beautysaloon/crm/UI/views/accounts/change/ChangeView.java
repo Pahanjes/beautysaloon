@@ -169,9 +169,6 @@ public class ChangeView extends VerticalLayout {
         userService.delete(deleteUserEvent.getUser());
         updateUserGrid();
         closeUserInfo();
-        /*employeeService.delete(deleteEvent.getEmployee());
-        updateEmployeeList();
-        closeEmployeeEditor();*/
     }
 
     private void closeUser(ChangeUserForm.CloseUserEvent closeUserEvent) {
