@@ -15,7 +15,6 @@ import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
-/*@Route(value = "lk/customer", layout = CabinetLayout.class)*/
 @Route(value = "lk/customer")
 @PageTitle("Клиенты | BS CRM")
 @CssImport("./styles/views/customer-view.css")

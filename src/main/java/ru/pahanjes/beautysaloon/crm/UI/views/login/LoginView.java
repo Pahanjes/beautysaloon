@@ -1,5 +1,6 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.login;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -19,7 +20,7 @@ import ru.pahanjes.beautysaloon.crm.security.AuthService;
 @CssImport("./styles/views/login-view.css")
 public class LoginView extends VerticalLayout {
 
-    public LoginView(AuthService authService){
+    public LoginView(AuthService authService) {
         setId("login-view");
         setSizeFull();
 
@@ -51,6 +52,8 @@ public class LoginView extends VerticalLayout {
             }
         });
 
+        buttonLogIn.addClickShortcut(Key.ENTER);
+
         add(
                 headerWelcome,
                 headerLogIn,
@@ -58,10 +61,6 @@ public class LoginView extends VerticalLayout {
                 password,
                 buttonLogIn
         );
-    }
-
-    private void register(String username, String password) {
-
     }
 
 }

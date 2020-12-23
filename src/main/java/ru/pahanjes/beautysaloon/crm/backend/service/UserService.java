@@ -13,6 +13,7 @@ import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,12 +21,24 @@ import java.util.logging.Logger;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
     private static final Logger LOGGER = Logger.getLogger(CustomerService.class.getName());
 
     public UserService(UserRepository userRepository, EmployeeRepository employeeRepository) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public List<User> findAll(String filter) {
+        if (filter == null || filter.isEmpty()) {
+            return userRepository.findAll();
+        } else {
+            return userRepository.search(filter);
+        }
     }
 
     @Override

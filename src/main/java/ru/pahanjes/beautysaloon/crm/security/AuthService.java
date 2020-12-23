@@ -3,11 +3,11 @@ package ru.pahanjes.beautysaloon.crm.security;
 import com.vaadin.flow.router.RouteConfiguration;
 import com.vaadin.flow.server.VaadinSession;
 import org.springframework.stereotype.Service;
+import ru.pahanjes.beautysaloon.crm.UI.views.accounts.AccountsView;
 import ru.pahanjes.beautysaloon.crm.UI.views.cabinet.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.UI.views.dashboard.DashBoardView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.CustomerListView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.EmployeeListView;
-import ru.pahanjes.beautysaloon.crm.UI.views.register.RegisterView;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
@@ -77,7 +77,10 @@ public class AuthService extends Exception {
             routes.add(new AuthorizedRoute("lk/customer", "Клиенты", CustomerListView.class));
             routes.add(new AuthorizedRoute("lk/employee", "Сотрудники", EmployeeListView.class));
             routes.add(new AuthorizedRoute("lk/dashboard", "Расписание", DashBoardView.class));
-            routes.add(new AuthorizedRoute("lk/register", "Регистрация", RegisterView.class));
+            routes.add(new AuthorizedRoute("lk/accounts", "Учетные записи", AccountsView.class));
+            /*routes.add(new AuthorizedRoute("lk/accounts/register", "Регистрация", RegisterView.class));
+            routes.add(new AuthorizedRoute("lk/accounts/change", "Редактирование", ChangeView.class));
+            routes.add(new AuthorizedRoute("lk/accounts/delete", "Удаление", DeleteView.class));*/
         }
         return routes;
     }

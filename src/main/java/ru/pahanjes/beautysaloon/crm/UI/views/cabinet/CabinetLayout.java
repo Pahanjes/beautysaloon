@@ -27,8 +27,7 @@ import ru.pahanjes.beautysaloon.crm.security.AuthService;
 public class CabinetLayout extends AppLayout {
 
     private final Tabs menu;
-    private AuthService authService;
-    /*private H1 viewTitle;*/
+    private final AuthService authService;
 
     public CabinetLayout(AuthService authService) {
         this.authService = authService;
@@ -73,6 +72,7 @@ public class CabinetLayout extends AppLayout {
         logoLayout.add(new H1("CRM"));
         menuLayout.add(logoLayout, menu);
         addToDrawer(menuLayout);
+        setDrawerOpened(false);
     }
 
     private void createHeader() {

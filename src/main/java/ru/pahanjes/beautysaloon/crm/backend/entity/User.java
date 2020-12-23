@@ -20,7 +20,7 @@ public class User extends AbstractEntity implements UserDetails {
 
     private boolean isActive;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Employee> employees;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

@@ -1,0 +1,12 @@
+.change-view .user-info {
+    display: flex;
+}
+
+.change-view .user-form {
+    flex: 2;
+}
+
+.change-view .employee-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}
