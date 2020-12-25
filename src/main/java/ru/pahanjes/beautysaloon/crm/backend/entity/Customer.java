@@ -4,6 +4,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Set;
 
 @Entity
 public class Customer extends AbstractEntity implements Cloneable {
@@ -33,9 +36,20 @@ public class Customer extends AbstractEntity implements Cloneable {
     @NotEmpty
     private String lastName = "";
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)//
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    /*@ManyToMany(mappedBy = "customers", fetch = FetchType.EAGER)
+    private Set<Service> services;*/
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "customer_service",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<Service> services;
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -48,7 +62,10 @@ public class Customer extends AbstractEntity implements Cloneable {
 
     @NotNull
     @NotEmpty
-    private String phoneNumber ="";
+    private String phoneNumber = "";
+
+    @Column(name = "timetable")
+    private java.time.LocalDateTime timetable = LocalDateTime.of(2000, Month.JANUARY, 1, 12, 0, 0);
 
     public String getEmail() {
         return email;
@@ -96,6 +113,30 @@ public class Customer extends AbstractEntity implements Cloneable {
 
     public Employee getEmployee() {
         return employee;
+    }
+
+    public LocalDateTime getTimetable() {
+        return timetable;
+    }
+
+    public void setTimetable(LocalDateTime timetable) {
+        this.timetable = timetable;
+    }
+
+    public Set<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
+
+    public void addService(Service service) {
+        this.services.add(service);
+    }
+
+    public void removeService(Service service) {
+        this.services.remove(service);
     }
 
     @Override

@@ -12,8 +12,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Service;
+import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
+
+import java.util.Set;
 
 @Route(value = "lk/customer")
 @PageTitle("Клиенты | BS CRM")
@@ -25,17 +29,19 @@ public class CustomerListView extends VerticalLayout {
     private TextField filter = new TextField();
     private CustomerService customerService;
     private EmployeeService employeeService;
+    private ServiceRepository serviceRepository;
     private CustomerForm customerForm;
 
-    public CustomerListView(CustomerService customerService, EmployeeService employeeService) {
+    public CustomerListView(CustomerService customerService, EmployeeService employeeService, ServiceRepository serviceRepository) {
         this.customerService = customerService;
         this.employeeService = employeeService;
+        this.serviceRepository = serviceRepository;
         addClassName("customer-list-view");
         setSizeFull();
         configureGrids();
-        getToolBar();
+        /*getToolBar();*/
 
-        customerForm = new CustomerForm(employeeService.findAll());
+        customerForm = new CustomerForm(employeeService.findAll(), serviceRepository);
         customerForm.addListener(CustomerForm.SaveEvent.class, this::saveCustomer);
         customerForm.addListener(CustomerForm.DeleteEvent.class, this::deleteCustomer);
         customerForm.addListener(CustomerForm.CloseEvent.class, closeEvent -> closeCustomerEditor());
@@ -74,9 +80,19 @@ public class CustomerListView extends VerticalLayout {
         customerGrid.addColumn(customer -> customer.getFirstName() == null ? "-" : customer.getFirstName()).setHeader("Имя").setSortable(true);
         customerGrid.addColumn(customer -> customer.getPhoneNumber() == null ? "-" : customer.getPhoneNumber()).setHeader("Номер телефона").setSortable(true);
         customerGrid.addColumn(customer -> customer.getEmail() == null ? "-" : customer.getEmail()).setHeader("email").setSortable(true);
-        customerGrid.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus()).setHeader("Статус").setSortable(true);
+        customerGrid.addColumn(customer -> customer.getServices() == null ? "-" : setToString(customer.getServices())).setHeader("Услуги").setSortable(false);
+        customerGrid.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus().getValue()).setHeader("Статус").setSortable(true);
         customerGrid.getColumns().forEach(customerColumn -> customerColumn.setAutoWidth(true));
         customerGrid.asSingleSelect().addValueChangeListener(event -> editCustomer(event.getValue()));
+    }
+
+    private static String setToString(Set<Service> serviceSet) {
+        StringBuilder result = new StringBuilder();
+        for(Service service : serviceSet) {
+            result.append(service.getService()).append(", ");
+        }
+        result.delete(result.length()-2, result.length()-1);
+        return result.toString();
     }
 
     private void saveCustomer(CustomerForm.SaveEvent saveEvent){

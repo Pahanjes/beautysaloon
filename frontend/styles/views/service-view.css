@@ -1,0 +1,12 @@
+.service-view .service-content {
+    display: flex;
+}
+
+.service-view .service-grid {
+    flex: 2;
+}
+
+.service-view .service-form {
+    flex: 1;
+    padding: var(--lumo-space-m);
+}

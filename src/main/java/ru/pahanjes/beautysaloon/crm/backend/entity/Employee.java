@@ -6,6 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Employee extends AbstractEntity{
@@ -32,12 +33,20 @@ public class Employee extends AbstractEntity{
         }
     }
 
-    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)//LAZY
     private List<Customer> clients;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)//LAZY
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "employee_service",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private Set<Service> services;
 
     @NotNull
     @NotEmpty
@@ -141,6 +150,22 @@ public class Employee extends AbstractEntity{
 
     public void setSalary(BigDecimal sal) {
         this.salary = sal;
+    }
+
+    public Set<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
+
+    public void addService(Service service) {
+        this.services.add(service);
+    }
+
+    public void removeService(Service service) {
+        this.services.remove(service);
     }
 
 }

@@ -1,5 +1,6 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.list;
 
+import com.vaadin.componentfactory.multiselect.MultiComboBox;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -19,12 +20,16 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Service;
+import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class EmployeeForm extends FormLayout {
 
+    private final List<Employee> employees;
+    private final ServiceRepository serviceRepository;
     TextField firstName = new TextField("Имя");
     TextField lastName = new TextField("Фамилия");
     TextField position = new TextField("должность");
@@ -32,6 +37,7 @@ public class EmployeeForm extends FormLayout {
     EmailField email = new EmailField("Электронная почта");
     TextField phoneNumber = new TextField("Номер телефона");
     ComboBox<Employee.Status> status = new ComboBox<>("Статус");
+    MultiComboBox<Service> services = new MultiComboBox<>("Оказываемые услуги");
 
     Button save = new Button("Сохранить");
     Button delete = new Button("Удалить");
@@ -39,13 +45,16 @@ public class EmployeeForm extends FormLayout {
 
     Binder<Employee> binder = new BeanValidationBinder<>(Employee.class);
 
-    public EmployeeForm(List<Employee> employees){
+    public EmployeeForm(List<Employee> employees, ServiceRepository serviceRepository){
+        this.employees = employees;
+        this.serviceRepository = serviceRepository;
         addClassName("employee-form");
 
         salary.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
         salary.setPrefixComponent(new Icon(VaadinIcon.MONEY));
         salary.setValue(new BigDecimal(0));
-
+        services.setItems(serviceRepository.findAll());
+        services.setItemLabelGenerator(Service::getService);
         binder.bindInstanceFields(this);
         status.setItems(Employee.Status.values());
         add(
@@ -56,6 +65,7 @@ public class EmployeeForm extends FormLayout {
                 phoneNumber,
                 email,
                 status,
+                services,
                 createButtonsLayout()
         );
     }

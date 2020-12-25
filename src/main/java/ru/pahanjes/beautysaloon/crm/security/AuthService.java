@@ -8,6 +8,7 @@ import ru.pahanjes.beautysaloon.crm.UI.views.cabinet.CabinetLayout;
 import ru.pahanjes.beautysaloon.crm.UI.views.dashboard.DashBoardView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.CustomerListView;
 import ru.pahanjes.beautysaloon.crm.UI.views.list.EmployeeListView;
+import ru.pahanjes.beautysaloon.crm.UI.views.service.ServiceView;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
@@ -78,6 +79,7 @@ public class AuthService extends Exception {
             routes.add(new AuthorizedRoute("lk/employee", "Сотрудники", EmployeeListView.class));
             routes.add(new AuthorizedRoute("lk/dashboard", "Расписание", DashBoardView.class));
             routes.add(new AuthorizedRoute("lk/accounts", "Учетные записи", AccountsView.class));
+            routes.add(new AuthorizedRoute("lk/servicelist", "Список услуг", ServiceView.class));
             /*routes.add(new AuthorizedRoute("lk/accounts/register", "Регистрация", RegisterView.class));
             routes.add(new AuthorizedRoute("lk/accounts/change", "Редактирование", ChangeView.class));
             routes.add(new AuthorizedRoute("lk/accounts/delete", "Удаление", DeleteView.class));*/

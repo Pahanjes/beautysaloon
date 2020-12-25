@@ -37,10 +37,12 @@ public class ChangeUserForm extends VerticalLayout {
     public ChangeUserForm(User user) {
         this.user = user;
         addClassName("user-form");
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         configureRadioButton();
         configureForm();
         add(
                 createTopLayout(),
+                changePassword,
                 createCenterLayout(),
                 isActive,
                 createButtonsLayout()
@@ -49,9 +51,11 @@ public class ChangeUserForm extends VerticalLayout {
 
     public ChangeUserForm() {
         addClassName("user-form");
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         configureRadioButton();
         add(
                 createTopLayout(),
+                changePassword,
                 createCenterLayout(),
                 isActive,
                 createButtonsLayout()
@@ -104,7 +108,7 @@ public class ChangeUserForm extends VerticalLayout {
     }
 
     private Component createCenterLayout() {
-        HorizontalLayout horizontalLayout = new HorizontalLayout(password, confirmPassword, changePassword);
+        HorizontalLayout horizontalLayout = new HorizontalLayout(password, confirmPassword);
         horizontalLayout.setAlignItems(Alignment.CENTER);
         return horizontalLayout;
     }
