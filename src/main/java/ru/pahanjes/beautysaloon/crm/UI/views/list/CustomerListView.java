@@ -80,7 +80,7 @@ public class CustomerListView extends VerticalLayout {
         customerGrid.addColumn(customer -> customer.getFirstName() == null ? "-" : customer.getFirstName()).setHeader("Имя").setSortable(true);
         customerGrid.addColumn(customer -> customer.getPhoneNumber() == null ? "-" : customer.getPhoneNumber()).setHeader("Номер телефона").setSortable(true);
         customerGrid.addColumn(customer -> customer.getEmail() == null ? "-" : customer.getEmail()).setHeader("email").setSortable(true);
-        customerGrid.addColumn(customer -> customer.getServices() == null ? "-" : setToString(customer.getServices())).setHeader("Услуги").setSortable(false);
+        customerGrid.addColumn(customer -> customer.getServices().size() == 0 ? "-" : setToString(customer.getServices())).setHeader("Услуги").setSortable(false);
         customerGrid.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus().getValue()).setHeader("Статус").setSortable(true);
         customerGrid.getColumns().forEach(customerColumn -> customerColumn.setAutoWidth(true));
         customerGrid.asSingleSelect().addValueChangeListener(event -> editCustomer(event.getValue()));

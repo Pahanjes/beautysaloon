@@ -36,6 +36,10 @@ public class EmployeeService {
         }
     }
 
+    public Employee findById(Long id) {
+        return employeeRepository.search(id);
+    }
+
     public void delete(Employee employee) {
         employeeRepository.delete(employee);
     }

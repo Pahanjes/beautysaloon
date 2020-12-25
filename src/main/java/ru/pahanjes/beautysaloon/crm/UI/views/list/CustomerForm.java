@@ -76,7 +76,7 @@ public class CustomerForm extends FormLayout {
             delete.setEnabled(false);
             timetable.setReadOnly(false);
             if(customer != null && customer.getEmployee() != null) {
-                if(!VaadinSession.getCurrent().getAttribute(User.class).getEmployees().get(0).getFullNameWithPosition().equals(customer.getEmployee().getFullNameWithPosition())) {
+                if(!VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getFullNameWithPosition().equals(customer.getEmployee().getFullNameWithPosition())) {
                     timetable.setReadOnly(true);
                 }
             }

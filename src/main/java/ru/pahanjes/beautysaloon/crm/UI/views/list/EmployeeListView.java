@@ -12,7 +12,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Service;
+import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
 import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
+import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
@@ -30,18 +32,22 @@ public class EmployeeListView  extends VerticalLayout {
     private CustomerService customerService;
     private EmployeeService employeeService;
     private ServiceRepository serviceRepository;
+    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
     private EmployeeForm employeeForm;
 
-    public EmployeeListView(CustomerService customerService, EmployeeService employeeService, ServiceRepository serviceRepository){
+    public EmployeeListView(CustomerService customerService, EmployeeService employeeService, ServiceRepository serviceRepository, UserRepository userRepository, EmployeeRepository employeeRepository){
         this.customerService = customerService;
         this.employeeService = employeeService;
         this.serviceRepository = serviceRepository;
+        this.userRepository = userRepository;
+        this.employeeRepository = employeeRepository;
         addClassName("employee-list-view");
         setSizeFull();
         configureGrid();
         getToolBar();
 
-        employeeForm = new EmployeeForm(employeeService.findAll(), serviceRepository);
+        employeeForm = new EmployeeForm(employeeService.findAll(), serviceRepository, userRepository, employeeRepository);
         employeeForm.addListener(EmployeeForm.SaveEvent.class, this::saveEmployee);
         employeeForm.addListener(EmployeeForm.DeleteEvent.class, this::deleteEmployee);
         employeeForm.addListener(EmployeeForm.CloseEvent.class, closeEvent -> closeEmployeeEditor());
@@ -104,9 +110,17 @@ public class EmployeeListView  extends VerticalLayout {
     }
 
     private void deleteEmployee(EmployeeForm.DeleteEvent deleteEvent){
+        removeEmployeeFromCustomer(employeeService.findById(deleteEvent.getEmployee().getId()));
         employeeService.delete(deleteEvent.getEmployee());
         updateEmployeeList();
         closeEmployeeEditor();
+    }
+
+    private void removeEmployeeFromCustomer(Employee employee) {
+        employee.getClients().forEach(customer -> {
+            customer.setEmployee(null);
+            customerService.save(customer);
+        });
     }
 
     private void editEmployee(Employee employee){

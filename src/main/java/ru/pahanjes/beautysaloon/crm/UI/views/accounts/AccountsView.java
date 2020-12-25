@@ -16,6 +16,7 @@ import ru.pahanjes.beautysaloon.crm.UI.views.accounts.change.ChangeView;
 import ru.pahanjes.beautysaloon.crm.UI.views.accounts.register.RegisterView;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
+import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 import ru.pahanjes.beautysaloon.crm.backend.service.UserService;
 import ru.pahanjes.beautysaloon.crm.security.AuthService;
@@ -42,11 +43,13 @@ public class AccountsView extends VerticalLayout {
     private AuthService authService;
     private EmployeeService employeeService;
     private UserService userService;
+    private CustomerService customerService;
 
-    public AccountsView(AuthService authService, EmployeeService employeeService, UserService userService){
+    public AccountsView(AuthService authService, EmployeeService employeeService, UserService userService, CustomerService customerService){
         this.authService = authService;
         this.employeeService = employeeService;
         this.userService = userService;
+        this.customerService = customerService;
         addClassName("accounts-view");
         setSizeFull();
 
@@ -54,7 +57,7 @@ public class AccountsView extends VerticalLayout {
         setAlignItems(Alignment.CENTER);
 
         registerView = new RegisterView(authService, employeeService);
-        changeView = new ChangeView(userService, employeeService);
+        changeView = new ChangeView(userService, employeeService, customerService);
 
         content.setId("content");
         content.setSizeFull();

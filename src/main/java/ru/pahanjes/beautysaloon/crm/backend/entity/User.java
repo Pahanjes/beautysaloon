@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,8 +19,8 @@ public class User extends AbstractEntity implements UserDetails {
 
     private boolean isActive;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Employee> employees;
+    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    private Employee employee;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -91,12 +90,12 @@ public class User extends AbstractEntity implements UserDetails {
         this.role = role;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public boolean checkPassword(String password) {

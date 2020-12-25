@@ -36,14 +36,11 @@ public class Customer extends AbstractEntity implements Cloneable {
     @NotEmpty
     private String lastName = "";
 
-    @ManyToOne(fetch = FetchType.EAGER)//
-    @JoinColumn(name = "employee_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH, optional = true)//
+    @JoinColumn(name = "employee_id", nullable = true)
     private Employee employee;
 
-    /*@ManyToMany(mappedBy = "customers", fetch = FetchType.EAGER)
-    private Set<Service> services;*/
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(
             name = "customer_service",
             joinColumns = @JoinColumn(name = "customer_id"),
@@ -66,6 +63,19 @@ public class Customer extends AbstractEntity implements Cloneable {
 
     @Column(name = "timetable")
     private java.time.LocalDateTime timetable = LocalDateTime.of(2000, Month.JANUARY, 1, 12, 0, 0);
+
+    public Customer(@NotNull @NotEmpty String firstName, @NotNull @NotEmpty String lastName, @NotNull Customer.Status status,
+                    @Email @NotNull @NotEmpty String email, @NotNull @NotEmpty String phoneNumber
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.status = status;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Customer() {
+    }
 
     public String getEmail() {
         return email;

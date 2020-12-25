@@ -3,7 +3,6 @@ package ru.pahanjes.beautysaloon.crm.UI.views.accounts.change;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -11,6 +10,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
+import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 import ru.pahanjes.beautysaloon.crm.backend.service.UserService;
 
@@ -74,7 +74,10 @@ public class ChangeView extends VerticalLayout {
 
         public void setEmployee(Employee employee) {
             this.employee = employee;
-            configureForm();
+            /*configureForm();*/
+            if(employee != null) {
+                configureForm();
+            }
         }
     }
 
@@ -82,66 +85,66 @@ public class ChangeView extends VerticalLayout {
     private TextField filter = new TextField();
     private UserService userService;
     private EmployeeService employeeService;
+    private CustomerService customerService;
     private ChangeUserForm userForm;
     private ShowEmployeeForm employeeForm;
-    private Div userInfo = new Div();
+    private HorizontalLayout userInfoAndAboutLayout = new HorizontalLayout();
 
-    public ChangeView (UserService userService, EmployeeService employeeService){
+    public ChangeView (UserService userService, EmployeeService employeeService, CustomerService customerService){
         this.userService = userService;
         this.employeeService = employeeService;
+        this.customerService = customerService;
         addClassName("change-view");
-        userInfo.addClassName("user-info");
         userForm = new ChangeUserForm();
         userForm.addListener(ChangeUserForm.SaveUserEvent.class, this::saveUser);
         userForm.addListener(ChangeUserForm.DeleteUserEvent.class, this::deleteUser);
-        userForm.addListener(ChangeUserForm.CloseUserEvent.class, this::closeUser);
+        userForm.addListener(ChangeUserForm.CloseUserEvent.class, closeUserEvent ->  closeEditor());
         userForm.addClassName("user-form");
         employeeForm = new ShowEmployeeForm();
         employeeForm.addClassName("employee-form");
         setSizeFull();
         configureGrid();
-        add(getToolBar(), userGrid, userInfo);
+        configureLayout();
+        add(getToolBar(), userGrid, userInfoAndAboutLayout);
         updateUserGrid();
     }
 
     private void configureGrid() {
-        userGrid.addClassName("usersss-grid");
+        userGrid.addClassName("user-grid");
         userGrid.removeAllColumns();
         userGrid.addColumn(user -> user.getUsername() == null ? "-" : user.getUsername()).setHeader("Логин").setSortable(true);
         userGrid.addColumn(user -> user.getRole() == null ? "-" : user.getRole()).setHeader("Права").setSortable(true);
         userGrid.addColumn(user -> user.isActive() ? "Активен" : "Неактивен").setHeader("Состояние").setSortable(true);
         userGrid.getColumns().forEach(userColumn -> userColumn.setAutoWidth(true));
         userGrid.asSingleSelect().addValueChangeListener(select -> {
-            if(select.getValue() == null) {
-                if(select.getOldValue().getEmployees().size() == 0) {
-                    configureDiv(select.getOldValue());
-                } else {
-                    configureDiv(select.getOldValue(), select.getOldValue().getEmployees().get(0));
-                }
-            } else{
-                if(select.getValue().getEmployees().size() == 0) {
-                    configureDiv(select.getValue());
-                } else {
-                    configureDiv(select.getValue(), select.getValue().getEmployees().get(0));
-                }
-            }
-            userInfo.setSizeFull();
-            userInfo.setVisible(true);
+            editUser(select.getValue());
         });
     }
 
-    private void configureDiv(User user, Employee employee) {
-        userForm.setUser(user);
-        employeeForm.setEmployee(employee);
-        userInfo.removeAll();
-        userInfo.add(userForm, employeeForm);
+    private void configureLayout() {
+        userInfoAndAboutLayout.add(userForm, employeeForm);
+        userInfoAndAboutLayout.setVisible(false);
     }
 
-    private void configureDiv(User user) {
-        userForm.setUser(user);
+    private void editUser(User user) {
+        if(user == null) {
+            closeEditor();
+        } else {
+            /*userForm.setUser(user);
+            userForm.setVisible(true);*/
+            userForm.setUser(user);
+            employeeForm.setEmployee(user.getEmployee());
+            userInfoAndAboutLayout.setVisible(true);
+            addClassName("user-editor");
+        }
+    }
+
+    private void closeEditor() {
+        userForm.setUser(null);
         employeeForm.setEmployee(null);
-        userInfo.removeAll();
-        userInfo.add(userForm, employeeForm);
+        userInfoAndAboutLayout.setVisible(false);
+        /*userForm.setVisible(false);*/
+        removeClassName("user-editor");
     }
 
     private HorizontalLayout getToolBar() {
@@ -162,21 +165,35 @@ public class ChangeView extends VerticalLayout {
     private void saveUser(ChangeUserForm.SaveUserEvent saveUserEvent) {
         userService.save(saveUserEvent.getUser());
         updateUserGrid();
-        closeUserInfo();
+        closeEditor();
     }
 
     private void deleteUser(ChangeUserForm.DeleteUserEvent deleteUserEvent) {
+        deleteUserFromEmployee(deleteUserEvent.getUser());
+        User temp = deleteUserEvent.getUser();
         userService.delete(deleteUserEvent.getUser());
         updateUserGrid();
-        closeUserInfo();
+        closeEditor();
     }
 
-    private void closeUser(ChangeUserForm.CloseUserEvent closeUserEvent) {
-        closeUserInfo();
+    private void deleteUserFromEmployee(User user) {
+        if(user.getEmployee() != null) {
+            user.getEmployee().setUser(null);
+            if(user.getEmployee().getClients().size() != 0) {
+                removeEmployeeFromCustomer(user.getEmployee());
+            }
+            employeeService.save(user.getEmployee());
+            employeeService.delete(user.getEmployee());
+            user.setEmployee(null);
+        }
     }
 
-    private void closeUserInfo() {
-        userInfo.setVisible(false);
+    private void removeEmployeeFromCustomer(Employee employee) {
+        employee.getClients().forEach(customer -> {
+            customer.setEmployee(null);
+            customerService.save(customer);
+        });
     }
+
 
 }

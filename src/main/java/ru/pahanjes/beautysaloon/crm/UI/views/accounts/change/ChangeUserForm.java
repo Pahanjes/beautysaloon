@@ -94,7 +94,7 @@ public class ChangeUserForm extends VerticalLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         delete.addClickListener(delete -> fireEvent(new DeleteUserEvent(this, user)));
-        close.addClickListener(close -> fireEvent(new CloseUserEvent(this, user)));
+        close.addClickListener(close -> fireEvent(new CloseUserEvent(this)));
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         return new HorizontalLayout(save, delete, close);
@@ -133,7 +133,10 @@ public class ChangeUserForm extends VerticalLayout {
 
     public void setUser(User user) {
         this.user = user;
-        configureForm();
+        /*configureForm();*/
+        if(user != null) {
+            configureForm();
+        }
     }
 
     public String getUsername() {
@@ -186,8 +189,8 @@ public class ChangeUserForm extends VerticalLayout {
     }
 
     public static class CloseUserEvent extends ChangeUserFormEvent {
-        public CloseUserEvent(ChangeUserForm source, User user) {
-            super(source, user);
+        public CloseUserEvent(ChangeUserForm source) {
+            super(source, null);
         }
     }
 

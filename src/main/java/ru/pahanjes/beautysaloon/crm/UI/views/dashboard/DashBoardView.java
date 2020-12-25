@@ -39,10 +39,7 @@ public class DashBoardView extends VerticalLayout {
     }
 
     private void configureList() {
-        /*if(customerService.count() != 0){
-            customerList = VaadinSession.getCurrent().getAttribute(User.class).getEmployees().get(0).getClients();
-        }*/
-        customerList = VaadinSession.getCurrent().getAttribute(User.class).getEmployees().get(0).getClients();
+        customerList = VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getClients();
     }
 
     private void configureGrid() {
@@ -59,24 +56,12 @@ public class DashBoardView extends VerticalLayout {
     }
 
     private Span getCustomerStats() {
-        /*if(customerService.count() != 0) {
-            Span stats = new Span(VaadinSession.getCurrent().getAttribute(User.class).getEmployees().get(0).getClients().size() + " клиентов");
-            stats.addClassName("customer-stats");
-            return stats;
-        } else {
-            Span stats = new Span("0 клиентов");
-            stats.addClassName("customer-stats");
-            return stats;
-        }*/
-        Span stats = new Span(VaadinSession.getCurrent().getAttribute(User.class).getEmployees().get(0).getClients().size() + " клиентов");
+        Span stats = new Span(VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getClients().size() + " клиентов");
         stats.addClassName("customer-stats");
         return stats;
     }
 
     private void updateTimetable(){
-        /*if(customerService.count() != 0) {
-            timetable.setItems(customerList);
-        }*/
         timetable.setItems(customerList);
     }
 }

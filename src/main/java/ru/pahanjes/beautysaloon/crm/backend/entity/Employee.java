@@ -36,17 +36,50 @@ public class Employee extends AbstractEntity{
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)//LAZY
     private List<Customer> clients;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)//LAZY
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)//LAZY
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user = null;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinTable(
             name = "employee_service",
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
     private Set<Service> services;
+
+    public Employee() {
+
+    }
+
+    public Employee(@NotNull @NotEmpty String firstName, @NotNull @NotEmpty String lastName, @NotNull Employee.Status status,
+                    @Email @NotNull @NotEmpty String email, @NotNull @NotEmpty String phoneNumber,
+                    @NotNull @NotEmpty String position, @NotNull BigDecimal salary
+    ) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.status = status;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.position = position;
+        this.salary = salary;
+    }
+
+    public Employee(List<Customer> clients, User user, Set<Service> services, @NotNull @NotEmpty String firstName,
+                    @NotNull @NotEmpty String lastName, @NotNull Employee.Status status, @Email @NotNull @NotEmpty String email,
+                    @NotNull @NotEmpty String phoneNumber, @NotNull @NotEmpty String position, @NotNull BigDecimal salary
+    ) {
+        this.clients = clients;
+        this.user = user;
+        this.services = services;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.status = status;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.position = position;
+        this.salary = salary;
+    }
 
     @NotNull
     @NotEmpty

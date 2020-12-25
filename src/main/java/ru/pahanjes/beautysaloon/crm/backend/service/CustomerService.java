@@ -33,6 +33,10 @@ public class CustomerService {
         }
     }
 
+    public Customer findById(Long id) {
+        return customerRepository.search(id);
+    }
+
     public Long count() {
         return customerRepository.count();
     }

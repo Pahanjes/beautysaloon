@@ -12,4 +12,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "where lower(e.firstName) like lower(concat('%', :searchTerm, '%')) " +
             "or lower(e.lastName) like lower(concat('%', :searchTerm, '%'))")
     List<Employee> search(@Param("searchTerm") String searchTerm);
+
+    @Query("Select e from Employee e where e.id= :searchTerm")
+    Employee search(@Param("searchTerm") Long id);
 }
