@@ -7,11 +7,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Route(value = "lk/dashboard")
 @PageTitle("Расписание | BS")
@@ -19,6 +22,7 @@ public class DashBoardView extends VerticalLayout {
 
     private final CustomerService customerService;
     private final EmployeeService employeeService;
+    private Long employeeId = VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getId();
     private List<Customer> customerList;
     private Grid<Customer> timetable;
 
@@ -39,15 +43,18 @@ public class DashBoardView extends VerticalLayout {
     }
 
     private void configureList() {
-        customerList = VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getClients();
+        Set<Customer> list1 = employeeService.findById(employeeId).getCustomers();
+        User user = VaadinSession.getCurrent().getAttribute(User.class);
+        Employee employee = employeeService.findById(employeeId);
+        customerList = new ArrayList<>(employeeService.findById(employeeId).getCustomers());
     }
 
     private void configureGrid() {
         timetable.addClassName("timetable");
         timetable.setSizeFull();
         timetable.removeAllColumns();
-        timetable.addColumn(customer -> customer.getTimetable().getYear() == 2000 ? "Не установлена" : customer.getTimetable().getYear() + "/" + customer.getTimetable().getMonthValue() + "/" + customer.getTimetable().getDayOfMonth()).setHeader("Дата").setSortable(true);
-        timetable.addColumn(customer -> customer.getTimetable().getYear() == 2000 ? "Не установлено" : customer.getTimetable().getHour() + ":" + customer.getTimetable().getMinute()).setHeader("Время").setSortable(true);
+        timetable.addColumn(customer -> customer.getTimetable() == null ? "Не установлена" : customer.getTimetable().getYear() + "/" + customer.getTimetable().getMonthValue() + "/" + customer.getTimetable().getDayOfMonth()).setHeader("Дата").setSortable(true);
+        timetable.addColumn(customer -> customer.getTimetable() == null ? "Не установлено" : customer.getTimetable().getHour() + ":" + customer.getTimetable().getMinute()).setHeader("Время").setSortable(true);
         timetable.addColumn(customer -> customer.getLastName() == null ? "-" : customer.getLastName()).setHeader("Фамилия").setSortable(true);
         timetable.addColumn(customer -> customer.getFirstName() == null ? "-" : customer.getFirstName()).setHeader("Имя").setSortable(true);
         timetable.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus().getValue()).setHeader("Статус").setSortable(true);
@@ -56,12 +63,19 @@ public class DashBoardView extends VerticalLayout {
     }
 
     private Span getCustomerStats() {
-        Span stats = new Span(VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getClients().size() + " клиентов");
+        Span stats;
+        if(employeeId != null) {
+            stats = new Span("Клиентов: " + employeeService.findById(employeeId).getCustomers().size());
+        } else {
+            stats = new Span("Клиентов: 0");
+        }
         stats.addClassName("customer-stats");
         return stats;
     }
 
     private void updateTimetable(){
-        timetable.setItems(customerList);
+        if(customerList != null) {
+            timetable.setItems(customerList);
+        }
     }
 }

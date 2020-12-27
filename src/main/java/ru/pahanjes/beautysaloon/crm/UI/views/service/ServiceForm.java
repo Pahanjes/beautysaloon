@@ -25,7 +25,7 @@ public class ServiceForm extends FormLayout {
     private BigDecimalField price = new BigDecimalField();
     private Binder<Service> binder = new BeanValidationBinder<>(Service.class);
     private Button save = new Button("Сохранить");
-    private Button delete = new Button("Удалить");
+    private Button delete = new Button();
     private Button close = new Button("Отменить");
 
     public ServiceForm() {
@@ -60,6 +60,18 @@ public class ServiceForm extends FormLayout {
 
     public void setService(Service service) {
         binder.setBean(service);
+        if(binder.getBean() != null) {
+            if(binder.getBean().isActive()) {
+                delete.setEnabled(true);
+                delete.setText("Деактивировать");
+            } else {
+                delete.setEnabled(true);
+                delete.setText("Активировать");
+            }
+        } else {
+            delete.setText("Активация");
+            delete.setEnabled(false);
+        }
     }
 
     private void validateAndSave() {

@@ -33,7 +33,7 @@ public class ServiceView extends VerticalLayout {
         configureGrid();
         Div content = new Div(serviceGrid, serviceForm);
         content.addClassName("service-content");
-        content.setSizeFull();//////
+        content.setSizeFull();
         add(
                 new HorizontalLayout(addServiceButton),
                 content
@@ -55,7 +55,9 @@ public class ServiceView extends VerticalLayout {
     }
 
     private void deleteService(ServiceForm.DeleteEvent deleteEvent) {
-        serviceService.delete(deleteEvent.getService());
+        /*deleteEvent.getService().setActive(false);*/
+        deleteEvent.getService().setActive(!deleteEvent.getService().isActive());
+        serviceService.save(deleteEvent.getService());
         updateGrid();
         closeServiceEditor();
     }

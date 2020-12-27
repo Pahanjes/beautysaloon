@@ -5,7 +5,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.Set;
 
 @Entity
@@ -35,12 +34,12 @@ public class Customer extends AbstractEntity implements Cloneable {
     @NotNull
     @NotEmpty
     private String lastName = "";
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH, optional = true)//
-    @JoinColumn(name = "employee_id", nullable = true)
+    /**/
+    @ManyToOne(fetch = FetchType.EAGER/*, cascade = {*//*CascadeType.REFRESH,*//* CascadeType.MERGE}*/)
+    @JoinColumn(name = "employee_id")
     private Employee employee;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    /**/
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "customer_service",
             joinColumns = @JoinColumn(name = "customer_id"),
@@ -62,16 +61,19 @@ public class Customer extends AbstractEntity implements Cloneable {
     private String phoneNumber = "";
 
     @Column(name = "timetable")
-    private java.time.LocalDateTime timetable = LocalDateTime.of(2000, Month.JANUARY, 1, 12, 0, 0);
+    private java.time.LocalDateTime timetable;
 
-    public Customer(@NotNull @NotEmpty String firstName, @NotNull @NotEmpty String lastName, @NotNull Customer.Status status,
-                    @Email @NotNull @NotEmpty String email, @NotNull @NotEmpty String phoneNumber
-    ) {
+    public Customer(@NotNull @NotEmpty String firstName, @NotNull @NotEmpty String lastName, Employee employee, Set<Service> services,
+                    @NotNull Customer.Status status, @Email @NotNull @NotEmpty String email, @NotNull @NotEmpty String phoneNumber,
+                    LocalDateTime timetable) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.employee = employee;
+        this.services = services;
         this.status = status;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.timetable = timetable;
     }
 
     public Customer() {

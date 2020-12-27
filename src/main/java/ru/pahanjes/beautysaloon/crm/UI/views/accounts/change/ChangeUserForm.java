@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
@@ -33,6 +34,7 @@ public class ChangeUserForm extends VerticalLayout {
     private Button delete = new Button("Удалить");
     private Button close = new Button("Отменить");
     private User user;
+    private final Long currentUserId = VaadinSession.getCurrent().getAttribute(User.class).getId();
 
     public ChangeUserForm(User user) {
         this.user = user;
@@ -133,9 +135,9 @@ public class ChangeUserForm extends VerticalLayout {
 
     public void setUser(User user) {
         this.user = user;
-        /*configureForm();*/
         if(user != null) {
             configureForm();
+            delete.setEnabled(!user.getId().equals(currentUserId));
         }
     }
 

@@ -42,6 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Включает авторизацию.
                 .and()
                     .authorizeRequests()
+                    .antMatchers("/main").permitAll()
                     // Разрешает весь внутренний трафик из фреймворка Vaadin.
                     .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
                     // Разрешает весь аутентифицированный трафик.
@@ -51,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .loginPage(LOGIN_URL).permitAll()
                     // Настраивает URL-адреса страницы входа.
                     .loginProcessingUrl(LOGIN_PROCESSING_URL)
-                    .defaultSuccessUrl("/lk")
+                    .defaultSuccessUrl("/lk/welcome")
                 // Настраивает URL-адрес выхода.
                 .and()
                     .logout().

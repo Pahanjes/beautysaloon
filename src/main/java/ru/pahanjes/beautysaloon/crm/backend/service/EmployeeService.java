@@ -41,6 +41,8 @@ public class EmployeeService {
     }
 
     public void delete(Employee employee) {
+        if (employee.getCustomers().size() != 0) employee.clearCustomers();
+        employeeRepository.save(employee);
         employeeRepository.delete(employee);
     }
 

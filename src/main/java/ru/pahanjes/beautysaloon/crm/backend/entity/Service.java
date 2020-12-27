@@ -1,7 +1,6 @@
 package ru.pahanjes.beautysaloon.crm.backend.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -14,9 +13,18 @@ public class Service extends AbstractEntity {
     @NotNull
     private BigDecimal price;
 
+    @NotNull
+    boolean isActive = true;
+
     public Service(String service, @NotNull BigDecimal price) {
         this.service = service;
         this.price = price;
+    }
+
+    public Service(String service, @NotNull BigDecimal price, @NotNull boolean isActive) {
+        this.service = service;
+        this.price = price;
+        this.isActive = isActive;
     }
 
     public Service() {
@@ -37,5 +45,13 @@ public class Service extends AbstractEntity {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

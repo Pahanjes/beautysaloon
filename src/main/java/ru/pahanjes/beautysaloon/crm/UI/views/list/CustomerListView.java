@@ -16,6 +16,7 @@ import ru.pahanjes.beautysaloon.crm.backend.entity.Service;
 import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
+import ru.pahanjes.beautysaloon.crm.backend.service.UserService;
 
 import java.util.Set;
 
@@ -30,18 +31,20 @@ public class CustomerListView extends VerticalLayout {
     private CustomerService customerService;
     private EmployeeService employeeService;
     private ServiceRepository serviceRepository;
+    private UserService userService;
     private CustomerForm customerForm;
 
-    public CustomerListView(CustomerService customerService, EmployeeService employeeService, ServiceRepository serviceRepository) {
+    public CustomerListView(CustomerService customerService, EmployeeService employeeService, ServiceRepository serviceRepository, UserService userService) {
         this.customerService = customerService;
         this.employeeService = employeeService;
         this.serviceRepository = serviceRepository;
+        this.userService = userService;
         addClassName("customer-list-view");
         setSizeFull();
         configureGrids();
         /*getToolBar();*/
 
-        customerForm = new CustomerForm(employeeService.findAll(), serviceRepository);
+        customerForm = new CustomerForm(employeeService.findAll(), serviceRepository, employeeService);
         customerForm.addListener(CustomerForm.SaveEvent.class, this::saveCustomer);
         customerForm.addListener(CustomerForm.DeleteEvent.class, this::deleteCustomer);
         customerForm.addListener(CustomerForm.CloseEvent.class, closeEvent -> closeCustomerEditor());
@@ -96,7 +99,19 @@ public class CustomerListView extends VerticalLayout {
     }
 
     private void saveCustomer(CustomerForm.SaveEvent saveEvent){
+        Employee employee = employeeService.findById(saveEvent.getCustomer().getEmployee().getId());
+        /*if (!saveEvent.isNewCustomer()) {
+            employee.getCustomers().remove(saveEvent.getCustomer());
+        }*/
+        employee.addCustomer(saveEvent.getCustomer());
+        employeeService.save(employee);
+        saveEvent.getCustomer().setEmployee(employeeService.findById(employee.getId()));
         customerService.save(saveEvent.getCustomer());
+        /*Customer customer = saveEvent.getCustomer();
+        Employee employee = customer.getEmployee();
+        customerService.save(saveEvent.getCustomer());
+        Customer customer1 = customerService.findById(customer.getId())*/;
+
         updateCustomerList();
         closeCustomerEditor();
     }

@@ -3,7 +3,6 @@ package ru.pahanjes.beautysaloon.crm.UI.views.login;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -12,12 +11,12 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import ru.pahanjes.beautysaloon.crm.exception.AuthException;
 import ru.pahanjes.beautysaloon.crm.security.AuthService;
 
 
 @Route(value = "login")
 @PageTitle("Login | BS CRM")
-@CssImport("./styles/views/login-view.css")
 public class LoginView extends VerticalLayout {
 
     public LoginView(AuthService authService) {
@@ -46,9 +45,9 @@ public class LoginView extends VerticalLayout {
         Button buttonLogIn = new Button("Войти", click -> {
             try {
                 authService.authenticate(username.getValue(), password.getValue());
-                UI.getCurrent().navigate("lk");
-            } catch (AuthService.AuthException e) {
-                Notification.show("Неверный логин или пароль!");
+                UI.getCurrent().navigate("lk/welcome");
+            } catch (AuthException exception) {
+                Notification.show(exception.getMessage());
             }
         });
 

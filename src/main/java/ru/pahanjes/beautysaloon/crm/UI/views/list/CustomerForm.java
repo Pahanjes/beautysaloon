@@ -4,28 +4,34 @@ import com.vaadin.componentfactory.multiselect.MultiComboBox;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import ru.pahanjes.beautysaloon.crm.backend.entity.*;
 import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
+import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
+import ru.pahanjes.beautysaloon.crm.util.Constants;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class CustomerForm extends FormLayout {
     private final List<Employee> employees;
     private final ServiceRepository serviceRepository;
+    private EmployeeService employeeService;
     TextField firstName = new TextField("Имя");
     TextField lastName = new TextField("Фамилия");
     EmailField email = new EmailField("Электронная почта");
@@ -41,17 +47,20 @@ public class CustomerForm extends FormLayout {
 
     Binder<Customer> binder = new BeanValidationBinder<>(Customer.class);
 
-    public CustomerForm(List<Employee> employees, ServiceRepository serviceRepository){
+    public CustomerForm(List<Employee> employees, ServiceRepository serviceRepository, EmployeeService employeeService){
         this.employees = employees;
         this.serviceRepository = serviceRepository;
+        this.employeeService = employeeService;
         addClassName("customer-form");
 
         //Областная 5 корпус 1 парадная 2 (обед с 12 до часу)
 
-        binder.bindInstanceFields(this);
+        configureBinder();
         status.setItems(Customer.Status.values());
-        timetable.setValue(LocalDateTime.now());
         timetable.setLabel("Дата и время приема");
+        timetable.setMin(Constants.COMPANY_FOUNDATION_DATE);
+        timetable.setMax(LocalDateTime.now().plusMonths(2));
+        timetable.setRequiredIndicatorVisible(true);
         services.setItems(serviceRepository.findAll());
         services.setItemLabelGenerator(Service::getService);
         employee.setItems(employees);
@@ -69,16 +78,90 @@ public class CustomerForm extends FormLayout {
         );
     }
 
+    private void configureBinder() {
+        binder.forField(firstName)
+                .withValidator(
+                        fname -> !fname.isEmpty(), "Введите имя")
+                .bind(Customer::getFirstName, Customer::setFirstName);
+        binder.forField(lastName)
+                .withValidator(
+                        lname -> !lname.isEmpty(), "Введите фамилию")
+                .bind(Customer::getLastName, Customer::setLastName);
+        binder.forField(email)
+                .withValidator(
+                        new EmailValidator("Введите корректный адрес электронной почты"))
+                .bind(Customer::getEmail, Customer::setEmail);
+        binder.forField(phoneNumber)
+                .withValidator(
+                        phone -> !phone.isEmpty(), "Введите номер телефона")
+                .bind(Customer::getPhoneNumber, Customer::setPhoneNumber);
+        binder.forField(status)
+                .withValidator(
+                        Objects::nonNull, "Выберите статус")
+                .bind(Customer::getStatus, Customer::setStatus);
+        binder.forField(timetable)
+                .withValidator(
+                        Objects::nonNull, "Выберите дату и время"
+                )
+                .bind(Customer::getTimetable, Customer::setTimetable);
+        binder.forField(services)
+                .withValidator(
+                        services1 -> services1.size() > 0, "Выберите услуги")
+                .bind(Customer::getServices, Customer::setServices);
+        binder.forField(employee)
+                .withValidator(
+                        Objects::nonNull, "Выберите работника")
+                .bind(Customer::getEmployee, Customer::setEmployee);
+        firstName.setRequired(true);
+        firstName.setRequiredIndicatorVisible(true);
+        firstName.setPlaceholder("Введите имя: ");
+
+        lastName.setRequired(true);
+        lastName.setRequiredIndicatorVisible(true);
+        lastName.setPlaceholder("Введите фамилию: ");
+
+        phoneNumber.setRequired(true);
+        phoneNumber.setRequiredIndicatorVisible(true);
+        phoneNumber.setPlaceholder("Введите номер телефона: ");
+
+        email.setRequiredIndicatorVisible(true);
+        email.setPlaceholder("Введите адрес электронноый почты: ");
+
+        status.setRequired(true);
+        status.setRequiredIndicatorVisible(true);
+        status.setPlaceholder("Выберите статус: ");
+
+        timetable.setRequiredIndicatorVisible(true);
+
+        services.setRequired(true);
+        services.setRequiredIndicatorVisible(true);
+        services.setPlaceholder("Выберите услуги: ");
+
+        employee.setRequired(true);
+        employee.setRequiredIndicatorVisible(true);
+        employee.setPlaceholder("Выберите сотрудника: ");
+    }
+
     public void setCustomer(Customer customer){
         binder.setBean(customer);
         if(VaadinSession.getCurrent().getAttribute(User.class).getRole().iterator().next() == Role.USER) {
             employee.setReadOnly(true);
             delete.setEnabled(false);
             timetable.setReadOnly(false);
+            if(customer != null) {
+                if(customer.getEmployee() == null) {
+                    employee.setReadOnly(false);
+                }
+            }
             if(customer != null && customer.getEmployee() != null) {
                 if(!VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getFullNameWithPosition().equals(customer.getEmployee().getFullNameWithPosition())) {
                     timetable.setReadOnly(true);
                 }
+            }
+        }
+        if(customer != null) {
+            if (customer.getTimetable() == null) {
+                timetable.clear();
             }
         }
     }
@@ -87,9 +170,6 @@ public class CustomerForm extends FormLayout {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        save.addClickShortcut(Key.ENTER);
-        close.addClickShortcut(Key.ESCAPE);
 
         save.addClickListener(click -> validateAndSave());
         delete.addClickListener(delete -> fireEvent(new DeleteEvent(this, binder.getBean())));
@@ -101,27 +181,59 @@ public class CustomerForm extends FormLayout {
     }
 
     private void validateAndSave() {
+        if(timetable.isEmpty()) {
+            Notification.show("Установите дату приема");
+            return;
+        }
+        Optional<Service> notActiveService = binder.getBean().getServices().stream().filter(service -> !service.isActive()).findFirst();
+        if (notActiveService.isPresent()) {
+            Notification.show("Услуга \"" + notActiveService.get().getService() + "\" в данный момент недоступна");
+            return;
+        }
         if(binder.isValid()){
-            fireEvent(new SaveEvent(this, binder.getBean()));
+            Employee employee = employeeService.findById(this.employee.getValue().getId());
+            if(employee.getCustomers().stream().anyMatch(
+                    customer -> customer
+                            .getFirstName().equals(binder.getBean().getFirstName())
+                            && customer.getLastName().equals(binder.getBean().getLastName())
+                            && customer.getPhoneNumber().equals(binder.getBean().getPhoneNumber())
+                    )
+            ) {
+                fireEvent(new SaveEvent(this, binder.getBean(), false));
+            } else {
+                fireEvent(new SaveEvent(this, binder.getBean(), true));
+            }
+            /*fireEvent(new SaveEvent(this, binder.getBean()));*/
         }
     }
 
     public static abstract class CustomerFormEvent extends ComponentEvent<CustomerForm> {
         private Customer customer;
+        private boolean isNewCustomer;
 
         protected CustomerFormEvent(CustomerForm source, Customer customer) {
             super(source, false);
             this.customer = customer;
         }
 
+        protected CustomerFormEvent(CustomerForm source, Customer customer, boolean isNewCustomer) {
+            super(source, false);
+            this.customer = customer;
+            this.isNewCustomer = isNewCustomer;
+        }
+
         public Customer getCustomer(){
             return customer;
+        }
+
+        public boolean isNewCustomer() {
+            return this.isNewCustomer;
         }
     }
 
     public static class SaveEvent extends CustomerFormEvent {
-        public SaveEvent(CustomerForm source, Customer customer) {
-            super(source, customer);
+        public SaveEvent(CustomerForm source, Customer customer, boolean isNewCustomer) {
+            super(source, customer, isNewCustomer);
         }
     }
 

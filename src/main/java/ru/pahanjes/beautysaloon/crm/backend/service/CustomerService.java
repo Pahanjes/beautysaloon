@@ -2,6 +2,7 @@ package ru.pahanjes.beautysaloon.crm.backend.service;
 
 import org.springframework.stereotype.Service;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.repository.CustomerRepository;
 import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
 
@@ -42,6 +43,12 @@ public class CustomerService {
     }
 
     public void delete(Customer customer) {
+        if (customer.getEmployee() != null) {
+            Employee employee = customer.getEmployee();
+            employee.removeCustomer(customer);
+            employeeRepository.save(employee);
+            customer.setEmployee(null);
+        }
         customerRepository.delete(customer);
     }
 

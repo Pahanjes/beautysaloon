@@ -5,7 +5,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,15 +31,17 @@ public class Employee extends AbstractEntity{
             return value;
         }
     }
-
+    /**/
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)//LAZY
-    private List<Customer> clients;
+    private Set<Customer> customers;
 
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)//LAZY
+    @OneToOne(cascade = {/*CascadeType.MERGE, *//*CascadeType.REFRESH,*//* */CascadeType.REMOVE}, fetch = FetchType.EAGER)//LAZY
     @JoinColumn(name = "user_id")
-    private User user = null;
+    private User user;
+    /*@OneToOne(mappedBy = "employee")
+    private User user;*/
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {/*CascadeType.REFRESH,*/ CascadeType.MERGE})
     @JoinTable(
             name = "employee_service",
             joinColumns = @JoinColumn(name = "employee_id"),
@@ -65,11 +66,11 @@ public class Employee extends AbstractEntity{
         this.salary = salary;
     }
 
-    public Employee(List<Customer> clients, User user, Set<Service> services, @NotNull @NotEmpty String firstName,
+    public Employee(Set<Customer> customers, User user, Set<Service> services, @NotNull @NotEmpty String firstName,
                     @NotNull @NotEmpty String lastName, @NotNull Employee.Status status, @Email @NotNull @NotEmpty String email,
                     @NotNull @NotEmpty String phoneNumber, @NotNull @NotEmpty String position, @NotNull BigDecimal salary
     ) {
-        this.clients = clients;
+        this.customers = customers;
         this.user = user;
         this.services = services;
         this.firstName = firstName;
@@ -109,12 +110,24 @@ public class Employee extends AbstractEntity{
     @NotNull
     private BigDecimal salary = new BigDecimal("0.0");
 
-    public List<Customer> getClients() {
-        return clients;
+    public Set<Customer> getCustomers() {
+        return customers;
     }
 
-    public void setClients(List<Customer> clients) {
-        this.clients = clients;
+    public void setCustomers(Set<Customer> customers) {
+        this.customers = customers;
+    }
+
+    public void addCustomer(Customer customer) {
+        this.customers.add(customer);
+    }
+
+    public void removeCustomer(Customer customer) {
+        this.customers.remove(customer);
+    }
+
+    public void clearCustomers() {
+        this.customers.clear();
     }
 
     public String getFirstName() {

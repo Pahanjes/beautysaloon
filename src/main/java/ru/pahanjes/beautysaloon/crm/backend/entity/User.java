@@ -19,13 +19,27 @@ public class User extends AbstractEntity implements UserDetails {
 
     private boolean isActive;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
+    /*@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;*/
+    @OneToOne(mappedBy = "user")
     private Employee employee;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> role;
+
+    public User() {
+    }
+
+    public User(String username, String password, boolean isActive, Employee employee, Set<Role> role) {
+        this.username = username;
+        setPassword(password);
+        this.isActive = isActive;
+        this.employee = employee;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

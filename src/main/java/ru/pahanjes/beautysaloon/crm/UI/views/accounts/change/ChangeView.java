@@ -68,13 +68,22 @@ public class ChangeView extends VerticalLayout {
             status.setReadOnly(true);
         }
 
+        private void setFieldsReadOnly() {
+            firstName.setReadOnly(true);
+            lastName.setReadOnly(true);
+            position.setReadOnly(true);
+            email.setReadOnly(true);
+            phoneNumber.setReadOnly(true);
+            status.setReadOnly(true);
+        }
+
         public Employee getEmployee() {
             return employee;
         }
 
         public void setEmployee(Employee employee) {
             this.employee = employee;
-            /*configureForm();*/
+            setFieldsReadOnly();
             if(employee != null) {
                 configureForm();
             }
@@ -169,8 +178,6 @@ public class ChangeView extends VerticalLayout {
     }
 
     private void deleteUser(ChangeUserForm.DeleteUserEvent deleteUserEvent) {
-        deleteUserFromEmployee(deleteUserEvent.getUser());
-        User temp = deleteUserEvent.getUser();
         userService.delete(deleteUserEvent.getUser());
         updateUserGrid();
         closeEditor();
@@ -179,21 +186,21 @@ public class ChangeView extends VerticalLayout {
     private void deleteUserFromEmployee(User user) {
         if(user.getEmployee() != null) {
             user.getEmployee().setUser(null);
-            if(user.getEmployee().getClients().size() != 0) {
+            /*if(user.getEmployee().getCustomers().size() != 0) {
                 removeEmployeeFromCustomer(user.getEmployee());
-            }
+            }*/
             employeeService.save(user.getEmployee());
             employeeService.delete(user.getEmployee());
             user.setEmployee(null);
         }
     }
 
-    private void removeEmployeeFromCustomer(Employee employee) {
-        employee.getClients().forEach(customer -> {
+    /*private void removeEmployeeFromCustomer(Employee employee) {
+        employee.getCustomers().forEach(customer -> {
             customer.setEmployee(null);
             customerService.save(customer);
         });
-    }
+    }*/
 
 
 }
