@@ -4,6 +4,7 @@ import com.vaadin.componentfactory.multiselect.MultiComboBox;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,7 +19,10 @@ import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 import ru.pahanjes.beautysaloon.crm.backend.service.ServiceService;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Optional;
 
 /*@Route("register")
 @PageTitle("Запись")*/
@@ -87,22 +91,49 @@ public class RegisterDialog extends Dialog {
         firstName.setPlaceholder("Виктория");
         firstName.setRequired(true);
         firstName.setRequiredIndicatorVisible(true);
+        firstName.setErrorMessage("Введите имя");
 
         lastName.setPlaceholder("Павловна");
         lastName.setRequired(true);
         lastName.setRequiredIndicatorVisible(true);
+        lastName.setErrorMessage("Введите фамилию");
 
         email.setPlaceholder("angelina_pavlovla@gmail.com");
         email.setRequiredIndicatorVisible(true);
+        email.setErrorMessage("Введите корректный адрес электронной почты");
 
         phoneNumber.setPlaceholder("+7-xxx-xxx-xx-xx");
         phoneNumber.setRequired(true);
         phoneNumber.setRequiredIndicatorVisible(true);
+        phoneNumber.setErrorMessage("Введите номер телефона");
 
         services.setItems(serviceService.findAll());
         services.setItemLabelGenerator(Service::getService);
+        services.setRequired(true);
+        services.setRequiredIndicatorVisible(true);
+        services.setPlaceholder("Стрижка");
+        services.setErrorMessage("Выберите услуги");
+        services.setI18n(new MultiComboBox.MultiComboBoxI18n()
+                .setClear("Очистить")
+                .setSelect("Выбрать все"));
 
-        timetable.setValue(LocalDateTime.now());
+        timetable.setMin(LocalDateTime.now().plusDays(1L));
+        timetable.setMax(LocalDateTime.now().plusMonths(1L));
+        timetable.setDatePickerI18n(new DatePicker.DatePickerI18n()
+                .setWeek("Неделя").setCalendar("Календарь").setClear("Очистить")
+                .setToday("Сегодня").setCancel("Отмена").setFirstDayOfWeek(1)
+                .setMonthNames(Arrays.asList(
+                        "Январь", "Февраль", "Март", "Апрель",
+                        "Май", "Июнь", "Июль", "Август", "Сентябрь",
+                        "Октябрь", "Ноябрь", "Декабрь"))
+                .setWeekdays(Arrays.asList(
+                        "Воскресенье", "Понедельник", "Вторник", "Среда",
+                        "Четверг", "Пятница", "Суббота"))
+                .setWeekdaysShort(Arrays.asList(
+                        "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"))
+        );
+        timetable.setRequiredIndicatorVisible(true);
+        timetable.setErrorMessage("Выберите дату и время");
 
         save.addClickListener(save -> saveCustomer());
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -113,6 +144,41 @@ public class RegisterDialog extends Dialog {
     }
 
     private void saveCustomer() {
+        if (firstName.getValue().isEmpty()) {
+            Notification notification = new Notification("Введите имя", 3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        } else if (lastName.getValue().isEmpty()) {
+            Notification notification = new Notification("Введите фамилию", 3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        } else if (email.getValue().isEmpty()) {
+            Notification notification = new Notification("Введите адрес электронной почты", 3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        }  else if (phoneNumber.getValue().isEmpty()) {
+            Notification notification = new Notification("Введите номер", 3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        } else if (services.getValue().size() == 0) {
+            Notification notification = new Notification("Выберите услуги", 3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        } else if(timetable.getValue().getDayOfWeek() == DayOfWeek.SUNDAY || timetable.getValue().getHour() > 21 || timetable.getValue().getHour() < 8) {
+            Notification notification = new Notification("Запись может быть произведена только с понедельника по субботу с 8:00 до 21:00",
+                    3000, Notification.Position.TOP_CENTER
+            );
+            notification.open();
+            return;
+        }
+        Optional<Service> notActiveService = services.getValue().stream().findFirst().filter(service -> !service.isActive());
+        if(notActiveService.isPresent()) {
+            Notification notification = new Notification("Услуга \"" + notActiveService.get().getService() + "\" временно недоступна",
+                    3000, Notification.Position.TOP_CENTER);
+            notification.open();
+            return;
+        }
+
         customer = new Customer();
         customer.setFirstName(firstName.getValue());
         customer.setLastName(lastName.getValue());
