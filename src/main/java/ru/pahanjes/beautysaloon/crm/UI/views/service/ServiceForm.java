@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 
 public class ServiceForm extends FormLayout {
     private TextField service = new TextField("Наименование");
-    private BigDecimalField price = new BigDecimalField();
+    private BigDecimalField price = new BigDecimalField("Цена");
     private Binder<Service> binder = new BeanValidationBinder<>(Service.class);
     private Button save = new Button("Сохранить");
     private Button delete = new Button();
@@ -30,7 +30,7 @@ public class ServiceForm extends FormLayout {
 
     public ServiceForm() {
         addClassName("service-form");
-        binder.bindInstanceFields(this);
+        configureBinder();
         price.addThemeVariants(TextFieldVariant.LUMO_ALIGN_RIGHT);
         price.setPrefixComponent(new Icon(VaadinIcon.MONEY));
         price.setValue(new BigDecimal(0));
@@ -39,6 +39,21 @@ public class ServiceForm extends FormLayout {
                 price,
                 createButtonLayout()
         );
+    }
+
+    private void configureBinder() {
+        binder.forField(service)
+                .withValidator(service -> !service.isEmpty(), "Введите название услуги")
+                .bind(Service::getService, Service::setService);
+        binder.forField(price)
+                .bind(Service::getPrice, Service::setPrice);
+
+        service.setRequired(true);
+        service.setRequiredIndicatorVisible(true);
+        service.setPlaceholder("Введите наименование: ");
+
+        price.setRequiredIndicatorVisible(true);
+        price.setPlaceholder("Введите стоимость услуги: ");
     }
 
     private Component createButtonLayout() {

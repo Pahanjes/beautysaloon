@@ -16,10 +16,12 @@ import com.vaadin.flow.component.textfield.*;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Service;
+import ru.pahanjes.beautysaloon.crm.backend.entity.User;
 import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
 import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
 import ru.pahanjes.beautysaloon.crm.backend.repository.UserRepository;
@@ -71,6 +73,7 @@ public class EmployeeForm extends FormLayout {
         services.setItems(serviceRepository.findAll());
         services.setItemLabelGenerator(Service::getService);
         status.setItems(Employee.Status.values());
+        status.setItemLabelGenerator(Employee.Status::getValue);
         add(
                 firstName,
                 lastName,
@@ -86,16 +89,6 @@ public class EmployeeForm extends FormLayout {
                 createButtonsLayout()
         );
     }
-   /*
-    TextField firstName = new TextField("Имя");
-    TextField lastName = new TextField("Фамилия");
-    EmailField email = new EmailField("Электронная почта");
-    TextField phoneNumber = new TextField("Номер телефона");
-    ComboBox<Customer.Status> status = new ComboBox<>("Статус");
-    DateTimePicker timetable = new DateTimePicker();
-    MultiComboBox<Service> services = new MultiComboBox<>("Услуги");
-    ComboBox<Employee> employee = new ComboBox<>("Сотрудник");
-    */
 
     private void configureBinder() {
         binder.forField(firstName)
@@ -232,8 +225,14 @@ public class EmployeeForm extends FormLayout {
             } else {
                 validateAndSave();
             }
-        }/*validateAndSave()*/);
-        delete.addClickListener(delete -> fireEvent(new DeleteEvent(this, binder.getBean())));
+        });
+        delete.addClickListener(delete -> {
+            if(!binder.getBean().getId().equals(VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getId())) {
+                fireEvent(new DeleteEvent(this, binder.getBean()));
+            } else {
+                Notification.show("Нельзя удалить себя");
+            }
+        });
         close.addClickListener(close -> fireEvent(new CloseEvent(this)));
 
         binder.addStatusChangeListener(event -> save.setEnabled(binder.isValid()));
@@ -248,16 +247,7 @@ public class EmployeeForm extends FormLayout {
                 if(authService.register(login.getValue(), password.getValue(), binder.getBean(), role.getValue()) == -1) {
                     Notification.show("Пользователь с таким именем уже существует");
                     return;
-                }/* else if(login.getValue().isEmpty()) {
-                    Notification.show("Введите логин");
-                    return;
-                } else if (password.getValue().isEmpty()) {
-                    Notification.show("Введите пароль");
-                    return;
-                } else if (status.getValue() == null) {
-                    Notification.show("Выберите статус");
-                    return;
-                }*/
+                }
             }
             fireEvent(new SaveEvent(this, binder.getBean()));
         }

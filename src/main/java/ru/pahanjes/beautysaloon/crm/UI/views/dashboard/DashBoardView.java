@@ -7,14 +7,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
-import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.User;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Route(value = "lk/dashboard")
 @PageTitle("Расписание | BS")
@@ -43,9 +41,6 @@ public class DashBoardView extends VerticalLayout {
     }
 
     private void configureList() {
-        Set<Customer> list1 = employeeService.findById(employeeId).getCustomers();
-        User user = VaadinSession.getCurrent().getAttribute(User.class);
-        Employee employee = employeeService.findById(employeeId);
         customerList = new ArrayList<>(employeeService.findById(employeeId).getCustomers());
     }
 
@@ -53,7 +48,7 @@ public class DashBoardView extends VerticalLayout {
         timetable.addClassName("timetable");
         timetable.setSizeFull();
         timetable.removeAllColumns();
-        timetable.addColumn(customer -> customer.getTimetable() == null ? "Не установлена" : customer.getTimetable().getYear() + "/" + customer.getTimetable().getMonthValue() + "/" + customer.getTimetable().getDayOfMonth()).setHeader("Дата").setSortable(true);
+        timetable.addColumn(customer -> customer.getTimetable() == null ? "Не установлена" : customer.getTimetable().getDayOfMonth() + "-" + customer.getTimetable().getMonthValue() + "-" + customer.getTimetable().getYear()).setHeader("Дата").setSortable(true);
         timetable.addColumn(customer -> customer.getTimetable() == null ? "Не установлено" : customer.getTimetable().getHour() + ":" + customer.getTimetable().getMinute()).setHeader("Время").setSortable(true);
         timetable.addColumn(customer -> customer.getLastName() == null ? "-" : customer.getLastName()).setHeader("Фамилия").setSortable(true);
         timetable.addColumn(customer -> customer.getFirstName() == null ? "-" : customer.getFirstName()).setHeader("Имя").setSortable(true);

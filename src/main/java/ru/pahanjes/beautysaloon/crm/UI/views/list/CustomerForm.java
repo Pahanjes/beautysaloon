@@ -7,6 +7,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
@@ -23,7 +24,9 @@ import ru.pahanjes.beautysaloon.crm.backend.repository.ServiceRepository;
 import ru.pahanjes.beautysaloon.crm.backend.service.EmployeeService;
 import ru.pahanjes.beautysaloon.crm.util.Constants;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,19 +34,19 @@ import java.util.Optional;
 public class CustomerForm extends FormLayout {
     private final List<Employee> employees;
     private final ServiceRepository serviceRepository;
-    private EmployeeService employeeService;
-    TextField firstName = new TextField("Имя");
-    TextField lastName = new TextField("Фамилия");
-    EmailField email = new EmailField("Электронная почта");
-    TextField phoneNumber = new TextField("Номер телефона");
-    ComboBox<Customer.Status> status = new ComboBox<>("Статус");
-    DateTimePicker timetable = new DateTimePicker();
-    MultiComboBox<Service> services = new MultiComboBox<>("Услуги");
-    ComboBox<Employee> employee = new ComboBox<>("Сотрудник");
+    private final EmployeeService employeeService;
+    private final TextField firstName = new TextField("Имя");
+    private final TextField lastName = new TextField("Фамилия");
+    private final EmailField email = new EmailField("Электронная почта");
+    private final TextField phoneNumber = new TextField("Номер телефона");
+    private final ComboBox<Customer.Status> status = new ComboBox<>("Статус");
+    private  DateTimePicker timetable = new DateTimePicker();
+    private final MultiComboBox<Service> services = new MultiComboBox<>("Услуги");
+    private final ComboBox<Employee> employee = new ComboBox<>("Сотрудник");
 
-    Button save = new Button("Сохранить");
-    Button delete = new Button("Удалить");
-    Button close = new Button("Отменить");
+    private final Button save = new Button("Сохранить");
+    private final Button delete = new Button("Удалить");
+    private final Button close = new Button("Отменить");
 
     Binder<Customer> binder = new BeanValidationBinder<>(Customer.class);
 
@@ -57,6 +60,7 @@ public class CustomerForm extends FormLayout {
 
         configureBinder();
         status.setItems(Customer.Status.values());
+        status.setItemLabelGenerator(Customer.Status::getValue);
         timetable.setLabel("Дата и время приема");
         timetable.setMin(Constants.COMPANY_FOUNDATION_DATE);
         timetable.setMax(LocalDateTime.now().plusMonths(2));
@@ -103,6 +107,9 @@ public class CustomerForm extends FormLayout {
                 .withValidator(
                         Objects::nonNull, "Выберите дату и время"
                 )
+                .withValidator(time -> !DayOfWeek.SUNDAY.equals(time.getDayOfWeek())
+                                        && time.getHour() >= 8 && time.getHour() <= 21,
+                        "Запись может быть произведена только с понедельника по субботу с 8:00 до 21:00")
                 .bind(Customer::getTimetable, Customer::setTimetable);
         binder.forField(services)
                 .withValidator(
@@ -125,17 +132,33 @@ public class CustomerForm extends FormLayout {
         phoneNumber.setPlaceholder("Введите номер телефона: ");
 
         email.setRequiredIndicatorVisible(true);
-        email.setPlaceholder("Введите адрес электронноый почты: ");
+        email.setPlaceholder("Введите адрес электронной почты: ");
 
         status.setRequired(true);
         status.setRequiredIndicatorVisible(true);
         status.setPlaceholder("Выберите статус: ");
 
         timetable.setRequiredIndicatorVisible(true);
+        timetable.setDatePickerI18n(new DatePicker.DatePickerI18n()
+        .setWeek("Неделя").setCalendar("Календарь").setClear("Очистить")
+        .setToday("Сегодня").setCancel("Отмена").setFirstDayOfWeek(1)
+        .setMonthNames(Arrays.asList(
+                "Январь", "Февраль", "Март", "Апрель",
+                "Май", "Июнь", "Июль", "Август", "Сентябрь",
+                "Октябрь", "Ноябрь", "Декабрь"))
+        .setWeekdays(Arrays.asList(
+                "Воскресенье", "Понедельник", "Вторник", "Среда",
+                "Четверг", "Пятница", "Суббота"))
+        .setWeekdaysShort(Arrays.asList(
+                "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"))
+        );
 
         services.setRequired(true);
         services.setRequiredIndicatorVisible(true);
         services.setPlaceholder("Выберите услуги: ");
+        services.setI18n(new MultiComboBox.MultiComboBoxI18n()
+        .setClear("Очистить")
+        .setSelect("Выбрать все"));
 
         employee.setRequired(true);
         employee.setRequiredIndicatorVisible(true);

@@ -46,7 +46,8 @@
     "@vaadin/vaadin-lumo-styles": "1.6.0",
     "@vaadin/vaadin-material-styles": "1.3.2",
     "@vaadin/vaadin-rich-text-editor": "1.3.0",
-    "@vaadin-component-factory/vcf-multiselect-combo-box": "0.5.0"
+    "@vaadin-component-factory/vcf-multiselect-combo-box": "0.5.0",
+    "cleave.js": "1.6.0"
   },
   "devDependencies": {
     "webpack": "4.42.0",
@@ -105,7 +106,8 @@
       "@vaadin/vaadin-lumo-styles": "1.6.0",
       "@vaadin/vaadin-material-styles": "1.3.2",
       "@vaadin/vaadin-rich-text-editor": "1.3.0",
-      "@vaadin-component-factory/vcf-multiselect-combo-box": "0.5.0"
+      "@vaadin-component-factory/vcf-multiselect-combo-box": "0.5.0",
+      "cleave.js": "1.6.0"
     },
     "devDependencies": {
       "webpack-babel-multi-target-plugin": "2.3.3",
@@ -118,6 +120,6 @@
       "webpack-merge": "4.2.2",
       "webpack-dev-server": "3.11.0"
     },
-    "hash": "cb11b1f6cc22f7423b2345fe31e1d5eab1794f2bca4d74574bb68af0cfb1268e"
+    "hash": "3f1f215910872499dffc48eaa41546e3f39bec6b3e4a8493e1af1cc5e747be42"
   }
 }
