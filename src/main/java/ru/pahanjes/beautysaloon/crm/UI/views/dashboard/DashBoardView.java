@@ -1,6 +1,7 @@
 package ru.pahanjes.beautysaloon.crm.UI.views.dashboard;
 
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -55,6 +56,7 @@ public class DashBoardView extends VerticalLayout {
         timetable.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus().getValue()).setHeader("Статус").setSortable(true);
         timetable.addColumn(customer -> customer.getPhoneNumber() == null ? "-" : customer.getPhoneNumber()).setHeader("Номер телефона").setSortable(true);
         timetable.getColumns().forEach(customerColumn -> customerColumn.setAutoWidth(true));
+        timetable.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
     }
 
     private Span getCustomerStats() {

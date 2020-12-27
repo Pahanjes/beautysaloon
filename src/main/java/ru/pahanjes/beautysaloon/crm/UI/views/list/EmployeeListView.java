@@ -3,6 +3,7 @@ package ru.pahanjes.beautysaloon.crm.UI.views.list;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -98,6 +99,7 @@ public class EmployeeListView  extends VerticalLayout {
         employeeGrid.addColumn(employee -> employee.getStatus() == null ? "-" : employee.getStatus().getValue()).setHeader("Статус").setSortable(true);
         employeeGrid.getColumns().forEach(customerColumn -> customerColumn.setAutoWidth(true));
         employeeGrid.asSingleSelect().addValueChangeListener(event -> editEmployee(event.getValue()));
+        employeeGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
     }
 
     private static String setToString(Set<Service> serviceSet) {

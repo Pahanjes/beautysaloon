@@ -3,6 +3,7 @@ package ru.pahanjes.beautysaloon.crm.UI.views.list;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -87,6 +88,7 @@ public class CustomerListView extends VerticalLayout {
         customerGrid.addColumn(customer -> customer.getStatus() == null ? "-" : customer.getStatus().getValue()).setHeader("Статус").setSortable(true);
         customerGrid.getColumns().forEach(customerColumn -> customerColumn.setAutoWidth(true));
         customerGrid.asSingleSelect().addValueChangeListener(event -> editCustomer(event.getValue()));
+        customerGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
     }
 
     private static String setToString(Set<Service> serviceSet) {
@@ -100,17 +102,10 @@ public class CustomerListView extends VerticalLayout {
 
     private void saveCustomer(CustomerForm.SaveEvent saveEvent){
         Employee employee = employeeService.findById(saveEvent.getCustomer().getEmployee().getId());
-        /*if (!saveEvent.isNewCustomer()) {
-            employee.getCustomers().remove(saveEvent.getCustomer());
-        }*/
         employee.addCustomer(saveEvent.getCustomer());
         employeeService.save(employee);
         saveEvent.getCustomer().setEmployee(employeeService.findById(employee.getId()));
         customerService.save(saveEvent.getCustomer());
-        /*Customer customer = saveEvent.getCustomer();
-        Employee employee = customer.getEmployee();
-        customerService.save(saveEvent.getCustomer());
-        Customer customer1 = customerService.findById(customer.getId())*/;
 
         updateCustomerList();
         closeCustomerEditor();

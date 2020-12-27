@@ -3,6 +3,7 @@ package ru.pahanjes.beautysaloon.crm.UI.views.service;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -86,6 +87,7 @@ public class ServiceView extends VerticalLayout {
         serviceGrid.addColumn(service -> service.getPrice() == null ? "-" : service.getPrice()).setHeader("Стоимость").setSortable(true);
         serviceGrid.getColumns().forEach(serviceColumn -> serviceColumn.setAutoWidth(true));
         serviceGrid.asSingleSelect().addValueChangeListener(event -> editService(event.getValue()));
+        serviceGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
     }
 
     private void updateGrid() {
