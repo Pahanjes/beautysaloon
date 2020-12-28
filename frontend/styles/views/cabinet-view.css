@@ -4,7 +4,6 @@
 #header h1 {
   font-size: var(--lumo-font-size-xxl);
   margin-top: var(--lumo-space-m);
-  /*margin: 0;*/
 }
 #header h5{
     margin-right: var(--lumo-space-m);

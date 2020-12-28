@@ -218,9 +218,9 @@ public class EmployeeForm extends FormLayout {
         save.addClickListener(click -> {
             if(login.getValue().isEmpty()) {
                 Notification.show("Введите логин");
-            } else if (password.getValue().isEmpty()) {
+            } /*else if (password.getValue().isEmpty()) {
                 Notification.show("Введите пароль");
-            } else if (status.getValue() == null) {
+            }*/ else if (status.getValue() == null) {
                 Notification.show("Выберите статус");
             } else {
                 validateAndSave();

@@ -56,8 +56,6 @@ public class CustomerForm extends FormLayout {
         this.employeeService = employeeService;
         addClassName("customer-form");
 
-        //Областная 5 корпус 1 парадная 2 (обед с 12 до часу)
-
         configureBinder();
         status.setItems(Customer.Status.values());
         status.setItemLabelGenerator(Customer.Status::getValue);
@@ -226,7 +224,6 @@ public class CustomerForm extends FormLayout {
             } else {
                 fireEvent(new SaveEvent(this, binder.getBean(), true));
             }
-            /*fireEvent(new SaveEvent(this, binder.getBean()));*/
         }
     }
 

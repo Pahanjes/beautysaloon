@@ -31,17 +31,15 @@ public class Employee extends AbstractEntity{
             return value;
         }
     }
-    /**/
+
     @OneToMany(mappedBy = "employee", fetch = FetchType.EAGER)//LAZY
     private Set<Customer> customers;
 
-    @OneToOne(cascade = {/*CascadeType.MERGE, *//*CascadeType.REFRESH,*//* */CascadeType.REMOVE}, fetch = FetchType.EAGER)//LAZY
+    @OneToOne(cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)//LAZY
     @JoinColumn(name = "user_id")
     private User user;
-    /*@OneToOne(mappedBy = "employee")
-    private User user;*/
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {/*CascadeType.REFRESH,*/ CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "employee_service",
             joinColumns = @JoinColumn(name = "employee_id"),

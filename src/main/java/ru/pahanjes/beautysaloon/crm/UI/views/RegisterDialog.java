@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-/*@Route("register")
-@PageTitle("Запись")*/
 public class RegisterDialog extends Dialog {
 
     private TextField firstName = new TextField("Имя");

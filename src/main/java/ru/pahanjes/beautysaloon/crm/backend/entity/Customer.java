@@ -34,11 +34,11 @@ public class Customer extends AbstractEntity implements Cloneable {
     @NotNull
     @NotEmpty
     private String lastName = "";
-    /**/
-    @ManyToOne(fetch = FetchType.EAGER/*, cascade = {*//*CascadeType.REFRESH,*//* CascadeType.MERGE}*/)
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employee;
-    /**/
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
     @JoinTable(
             name = "customer_service",

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @PageTitle("Добро пожаловать | BS CRM")
 public class WelcomeLayout extends VerticalLayout {
 
-    /*@CssImport("./styles/divs/news-block.css")*/
     private static class NewsBlock extends Div {
         private final String datetime;
         private final String news;
@@ -26,12 +25,7 @@ public class WelcomeLayout extends VerticalLayout {
         public NewsBlock(String datetime, String news) {
             this.datetime = datetime;
             this.news = news;
-
-            /*setId("news-block");*/
-
-            /*getStyle().set("background-color", "white");*/
             getStyle().set("border", " black");
-
             add(getNewsBlock());
         }
 
@@ -52,7 +46,7 @@ public class WelcomeLayout extends VerticalLayout {
     }
 
     private Component createHeaderLayout(){
-        H2 header; /*= new H2("Добро пожаловать, " + VaadinSession.getCurrent().getAttribute(User.class).getEmployee().getFirstName());*/
+        H2 header;
         if(VaadinSession.getCurrent().getAttribute(User.class).getEmployee() == null) {
             header = new H2("Добро пожаловать");
         } else {

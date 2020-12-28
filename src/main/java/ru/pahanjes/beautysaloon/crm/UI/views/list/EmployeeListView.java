@@ -24,7 +24,6 @@ import ru.pahanjes.beautysaloon.crm.security.AuthService;
 import java.math.BigDecimal;
 import java.util.Set;
 
-/*@Route(value = "lk/employee", layout = CabinetLayout.class)*/
 @Route(value = "lk/employee")
 @PageTitle("Сотрудники | BS CRM")
 @CssImport("./styles/views/employee-view.css")
@@ -72,7 +71,7 @@ public class EmployeeListView  extends VerticalLayout {
         filter.setPlaceholder("Введите фильтр...");
         filter.setClearButtonVisible(true);
         filter.setValueChangeMode(ValueChangeMode.LAZY);
-        filter.addValueChangeListener(event -> updateEmployeeList()); //!!!!!!!!!!!!!!!!!!!!!!!!!
+        filter.addValueChangeListener(event -> updateEmployeeList());
 
         Button addEmployeeButton = new Button("Добавить сотрудника", click -> addEmployee());
         HorizontalLayout toolbar = new HorizontalLayout(filter, addEmployeeButton);
@@ -118,18 +117,10 @@ public class EmployeeListView  extends VerticalLayout {
     }
 
     private void deleteEmployee(EmployeeForm.DeleteEvent deleteEvent){
-        /*removeEmployeeFromCustomer(employeeService.findById(deleteEvent.getEmployee().getId()));*/
         employeeService.delete(deleteEvent.getEmployee());
         updateEmployeeList();
         closeEmployeeEditor();
     }
-
-    /*private void removeEmployeeFromCustomer(Employee employee) {
-        employee.getCustomers().forEach(customer -> {
-            customer.setEmployee(null);
-            customerService.save(customer);
-        });
-    }*/
 
     private void editEmployee(Employee employee){
         if(employee == null){

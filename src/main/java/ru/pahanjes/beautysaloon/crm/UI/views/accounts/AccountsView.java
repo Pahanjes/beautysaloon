@@ -13,7 +13,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import ru.pahanjes.beautysaloon.crm.UI.views.accounts.change.ChangeView;
-import ru.pahanjes.beautysaloon.crm.UI.views.accounts.register.RegisterView;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Role;
 import ru.pahanjes.beautysaloon.crm.backend.service.CustomerService;
@@ -38,7 +37,6 @@ public class AccountsView extends VerticalLayout {
     private HorizontalLayout firstLayout = new HorizontalLayout();
     private HorizontalLayout secondLayout = new HorizontalLayout();
     Div content = new Div();
-    private RegisterView registerView;
     private ChangeView changeView;
     private AuthService authService;
     private EmployeeService employeeService;
@@ -53,10 +51,7 @@ public class AccountsView extends VerticalLayout {
         addClassName("accounts-view");
         setSizeFull();
 
-        //setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
-
-        registerView = new RegisterView(authService, employeeService);
         changeView = new ChangeView(userService, employeeService, customerService);
 
         content.setId("content");
@@ -66,24 +61,20 @@ public class AccountsView extends VerticalLayout {
         subMenu.setId("subMenu");
 
         add(
-                subMenu,
-                content
+                changeView
         );
     }
 
     public void createMenuTabs(Tabs tabs, Div div) {
         Tab tab1 = new Tab("Регистрация");
-        Div div1 = new Div(registerView);
-        div1.setVisible(true);
         Tab tab2 = new Tab("Редактирование");
         Div div2 = new Div(changeView);
         div2.setVisible(false);
 
         Map<Tab, Component> tabsToPages = new HashMap<>();
-        tabsToPages.put(tab1, div1);
         tabsToPages.put(tab2, div2);
-        tabs.add(tab1, tab2);
-        div.add(div1, div2);
+        tabs.add(tab2);
+        div.add(div2);
 
         tabs.setSelectedIndex(0);
         tabs.addSelectedChangeListener(selected -> {

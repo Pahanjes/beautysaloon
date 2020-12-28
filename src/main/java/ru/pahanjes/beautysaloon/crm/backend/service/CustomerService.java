@@ -55,7 +55,7 @@ public class CustomerService {
     public void save(Customer customer) {
         if(customer == null) {
             LOGGER.log(Level.SEVERE,
-                    "Клиент пуст. Вы уверены, что хотите подключить форму к приложению?");
+                    "customer_error");
             return;
         }
         customerRepository.save(customer);

@@ -19,9 +19,6 @@ public class User extends AbstractEntity implements UserDetails {
 
     private boolean isActive;
 
-    /*@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;*/
     @OneToOne(mappedBy = "user")
     private Employee employee;
 

@@ -104,6 +104,7 @@ public class ChangeView extends VerticalLayout {
         this.userService = userService;
         this.employeeService = employeeService;
         this.customerService = customerService;
+        setJustifyContentMode(JustifyContentMode.CENTER);
         addClassName("change-view");
         userForm = new ChangeUserForm();
         userForm.addListener(ChangeUserForm.SaveUserEvent.class, this::saveUser);
@@ -141,8 +142,6 @@ public class ChangeView extends VerticalLayout {
         if(user == null) {
             closeEditor();
         } else {
-            /*userForm.setUser(user);
-            userForm.setVisible(true);*/
             userForm.setUser(user);
             employeeForm.setEmployee(user.getEmployee());
             userInfoAndAboutLayout.setVisible(true);
@@ -154,7 +153,6 @@ public class ChangeView extends VerticalLayout {
         userForm.setUser(null);
         employeeForm.setEmployee(null);
         userInfoAndAboutLayout.setVisible(false);
-        /*userForm.setVisible(false);*/
         removeClassName("user-editor");
     }
 
@@ -188,21 +186,10 @@ public class ChangeView extends VerticalLayout {
     private void deleteUserFromEmployee(User user) {
         if(user.getEmployee() != null) {
             user.getEmployee().setUser(null);
-            /*if(user.getEmployee().getCustomers().size() != 0) {
-                removeEmployeeFromCustomer(user.getEmployee());
-            }*/
             employeeService.save(user.getEmployee());
             employeeService.delete(user.getEmployee());
             user.setEmployee(null);
         }
     }
-
-    /*private void removeEmployeeFromCustomer(Employee employee) {
-        employee.getCustomers().forEach(customer -> {
-            customer.setEmployee(null);
-            customerService.save(customer);
-        });
-    }*/
-
 
 }

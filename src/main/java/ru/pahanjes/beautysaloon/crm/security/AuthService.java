@@ -25,10 +25,6 @@ import java.util.Set;
 @Service
 public class AuthService extends Exception {
 
-    /*public static class AuthException extends Exception {
-
-    }*/
-
     private AuthorizedRoute route;
     private final UserRepository userRepository;
     private EmployeeRepository employeeRepository;

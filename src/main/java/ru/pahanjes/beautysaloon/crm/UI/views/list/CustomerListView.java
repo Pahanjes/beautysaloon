@@ -43,7 +43,6 @@ public class CustomerListView extends VerticalLayout {
         addClassName("customer-list-view");
         setSizeFull();
         configureGrids();
-        /*getToolBar();*/
 
         customerForm = new CustomerForm(employeeService.findAll(), serviceRepository, employeeService);
         customerForm.addListener(CustomerForm.SaveEvent.class, this::saveCustomer);

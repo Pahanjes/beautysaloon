@@ -47,7 +47,8 @@ public class LoginView extends VerticalLayout {
                 authService.authenticate(username.getValue(), password.getValue());
                 UI.getCurrent().navigate("lk/welcome");
             } catch (AuthException exception) {
-                Notification.show(exception.getMessage());
+                Notification notification = new Notification(exception.getMessage(), 3000, Notification.Position.TOP_CENTER);
+                notification.open();
             }
         });
 

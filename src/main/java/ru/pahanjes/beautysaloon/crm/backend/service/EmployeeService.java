@@ -1,6 +1,7 @@
 package ru.pahanjes.beautysaloon.crm.backend.service;
 
 import org.springframework.stereotype.Service;
+import ru.pahanjes.beautysaloon.crm.backend.entity.Customer;
 import ru.pahanjes.beautysaloon.crm.backend.entity.Employee;
 import ru.pahanjes.beautysaloon.crm.backend.repository.EmployeeRepository;
 
@@ -13,9 +14,11 @@ public class EmployeeService {
 
     private static final Logger LOGGER = Logger.getLogger(EmployeeService.class.getName());
     private EmployeeRepository employeeRepository;
+    private CustomerService customerService;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, CustomerService customerService) {
         this.employeeRepository = employeeRepository;
+        this.customerService = customerService;
     }
 
     public List<Employee> findAll() {
@@ -41,7 +44,14 @@ public class EmployeeService {
     }
 
     public void delete(Employee employee) {
-        if (employee.getCustomers().size() != 0) employee.clearCustomers();
+        /*if (employee.getCustomers().size() != 0) employee.clearCustomers();*/
+        if(employee.getCustomers().size() != 0) {
+            for(Customer customer : employee.getCustomers()) {
+                customer.setEmployee(null);
+                customerService.save(customer);
+            }
+            employee.clearCustomers();
+        }
         employeeRepository.save(employee);
         employeeRepository.delete(employee);
     }
